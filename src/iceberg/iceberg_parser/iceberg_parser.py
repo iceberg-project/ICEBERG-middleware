@@ -13,11 +13,7 @@ class IcebergParser(object):
 
     def __init__(self):
         parser = argparse.ArgumentParser(description='ICEBERG command description:',
-                                         usage='''iceberg --resource/-r <resource> --queue/-q ''' +
-                                         '''<queue> --cpu/-c <cpus> --gpus/-g <gpus> ''' +
-                                         '''--input_path/-ip <input path> --ouput_path/-op''' +
-                                         '''<output path> --walltime/-w <wall time> ''' +
-                                         '''--analysis/-a <analysis type> [<args>]''')
+                                         epilog='''Enjoy our tool!''')
         required_args = parser.add_argument_group()
         required_args.title = 'Required Arguments'
         required_args.add_argument('--resource', '-r', help='Where the execution will happen',
