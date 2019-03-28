@@ -16,7 +16,7 @@ import shutil
 import subprocess as sp
 
 name     = 'iceberg'
-mod_root = 'src/iceberg/'
+mod_root = 'src/'
 
 try:
     from setuptools import setup, Command, find_packages
@@ -188,10 +188,10 @@ setup_args = {
 
     'package_data'      :  {'': ['VERSION', 'SDIST', sdist_name]},
 
-    'install_requires'  :  ['pandas','pytest'],
+    'install_requires'  :  ['pandas'],
 
     'zip_safe'          : False,
-    'scripts'            : ['bin/iceberg'
+    'scripts'           : ['bin/iceberg'
                            ],
   # 'build_sphinx'       : {
   #     'source-dir'     : 'docs/',

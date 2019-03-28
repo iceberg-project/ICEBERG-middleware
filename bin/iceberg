@@ -2,29 +2,5 @@
 import argparse
 import iceberg
 
-def args_parser():
-
-    parser = argparse.ArgumentParser(description='ICEBERG Line Command\nBased on\
-                                     the type of analysis the parameters differ')
-    general = parser.add_argument_group('General',description='These are the \
-                                        general options. All are required for \
-                                        correct execution')
-    general.add_argument('--resource','-r', help='Where the execution will happen', required=True)
-    general.add_argument('--queue','-q', help='The queue of the resource', required=True)
-    general.add_argument('--cpus','-c', help='How many CPUs will be required', required=True)
-    general.add_argument('--gpus','-g', help='How many GPUs will be required', required=True)
-    general.add_argument('--input_path','-i', help='Where the input images are', required=True)
-    general.add_argument('--output_path','-o', help='Where the results should be saved', required=True)
-    general.add_argument('--walltime','-w', help='The estimated execution time', required=True)
-    general.add_argument('--usecase','-u', help='The type of analysis to be executed', required=True)
-    seals_args = parser.add_argument_group('Seals',description='These are the \
-                                        options for Seals type analysis.')
-    seals_args.add_argument('--scale_bands','-s', help='The size of the scale bands')
-    parser._optionals.title = 'Valid arguments'
-
-    return parser.parse_args()
-
 if __name__ == "__main__":
-    args = args_parser()
-
-    
+    iceberg.iceberg_parser.IcebergParser()
