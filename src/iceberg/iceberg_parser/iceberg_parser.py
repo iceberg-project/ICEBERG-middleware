@@ -10,8 +10,14 @@ import sys
 
 
 class IcebergParser(object):
+    """
+    This class is the argument parser of the ICEBERG software tool.
+    """
 
     def __init__(self):
+        """
+        The constructor
+        """
         parser = argparse.ArgumentParser(description='ICEBERG command description:',
                                          epilog='''Enjoy our tool!''')
         required_args = parser.add_argument_group()
@@ -54,6 +60,9 @@ class IcebergParser(object):
         self._args = args
 
     def seals(self):
+        """
+        Additional arguments for the Seals Use Case
+        """
         seals_args = argparse.ArgumentParser(description='These are the options for Seals type \
                                              analysis.')
         seals_args.add_argument('--scale_bands', '-s', help='The size of the scale bands')
@@ -71,6 +80,9 @@ class IcebergParser(object):
         self._usecase_args = args
 
     def penguins(self):
+        """
+        Additional arguments for the Penguins Use Case
+        """
         penguins_args = argparse.ArgumentParser(description='These are the options for Penguins \
                                                             type analysis.')
         penguins_args.add_argument('--scale_bands', '-s', help='The size of the scale bands')
@@ -89,6 +101,9 @@ class IcebergParser(object):
         self._usecase_args = args
 
     def four_d_geolocation(self):
+        """
+        Additional arguments for the 4D Geolocation Use Case
+        """
         four_d_geolocation_args = argparse.ArgumentParser(description='These are the options for \
                                                                        4DGeolocaltion type \
                                                                        analysis.')
@@ -119,6 +134,9 @@ class IcebergParser(object):
         self._usecase_args = args
 
     def rivers(self):
+        """
+        Additional arguments for the Rivers Use Case
+        """
         rivers_args = argparse.ArgumentParser(description='These are the options for Rivers type \
                                                            analysis.')
         rivers_args.add_argument('--threshold', '-th', help='Minimum confidence to accept')
@@ -137,6 +155,9 @@ class IcebergParser(object):
         self._usecase_args = args
 
     def landcover(self):
+        """
+        Additional arguments for the Landcover Use Case
+        """
         landcover_args = argparse.ArgumentParser(description='These are the options for Landcover \
                                                               type analysis.')
         landcover_args.add_argument('--spec_lib', '-sl', help='Addition of new ground data to \
