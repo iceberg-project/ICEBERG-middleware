@@ -157,19 +157,6 @@ def read(fname):
     except Exception :
         return ''
 
-
-#df = list()
-#df.append(('share/%s'                       % name, ['docs/source/events.md']))
-#df.append(('share/%s/examples'              % name, glob.glob('examples/[01]*.py')))
-#df.append(('share/%s/examples'              % name, glob.glob('examples/hello*')))
-#df.append(('share/%s/examples'              % name, glob.glob('examples/*.json')))
-#df.append(('share/%s/examples/docs'         % name, glob.glob('examples/docs/*')))
-#df.append(('share/%s/examples/misc'         % name, glob.glob('examples/misc/*')))
-#df.append(('share/%s/examples/kmeans'       % name, glob.glob('examples/kmeans/*')))
-#df.append(('share/%s/examples/mandelbrot'   % name, glob.glob('examples/mandelbrot/*')))
-#df.append(('share/%s/examples/data_staging' % name, glob.glob('examples/data_staging/*')))
-
-
 # -------------------------------------------------------------------------------
 setup_args = {
     'name'               : name,
@@ -194,21 +181,18 @@ setup_args = {
         'Operating System :: POSIX',
         'Operating System :: Unix'
     ],
-    'namespace_packages' : ['iceberg'],
-    'packages'           : find_packages('src'),
-    'package_dir'        : {'': 'src'},
-    'package_data'       : {'': ['*.txt', '*.sh', '*.json', '*.gz',
-                                 'VERSION', 'SDIST', sdist_name]},
-    'cmdclass'           : {
-        'test'           : our_test,
-                           },
-    'install_requires'   : ['radical.entk',
-                            'pandas',
-                            'msgpack-python',
-                            'pyzmq'], 
-    'tests_require'      : ['mock==2.0.0', 'pytest'],
-    'test_suite'         : '%s.tests' % name,
-    'zip_safe'           : False,
+    'namespace_packages': ['iceberg'],
+    'packages'          : find_packages('src/'),
+
+    'package_dir'       : {'': 'src/'},
+
+    'package_data'      :  {'': ['VERSION', 'SDIST', sdist_name]},
+
+    'install_requires'  :  ['pandas','pytest'],
+
+    'zip_safe'          : False,
+    'scripts'            : ['bin/iceberg'
+                           ],
   # 'build_sphinx'       : {
   #     'source-dir'     : 'docs/',
   #     'build-dir'      : 'docs/build',
@@ -221,14 +205,12 @@ setup_args = {
     # sys.prefix/share/$name
     # It needs the MANIFEST.in entries to work.
   # 'data_files'         : makeDataFiles('share/%s/examples/' % name, 'examples'),
-    'data_files'         : df,
+  #  'data_files'         : df,
 }
 
 # ------------------------------------------------------------------------------
 
 setup(**setup_args)
-
-os.system('rm -rf src/%s.egg-info' % name)
 
 # ------------------------------------------------------------------------------
 
