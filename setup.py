@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-__author__    = 'RADICAL Team'
+__author__    = 'Ioannis Paraskevakos'
 __email__     = 'radical@rutgers.edu'
-__copyright__ = 'Copyright 2013-16, RADICAL Research, Rutgers University'
+__copyright__ = 'Copyright 2018-19'
 __license__   = 'MIT'
 
 
