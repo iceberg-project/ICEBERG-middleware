@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-__author__    = 'Ioannis Paraskevakos'
-__email__     = 'radical@rutgers.edu'
+__author__    = 'ICEBERG CI Team'
+__email__     = 'iceberg-ci@googlegroups.com'
 __copyright__ = 'Copyright 2018-19'
 __license__   = 'MIT'
 
@@ -164,7 +164,7 @@ setup_args = {
     'description'        : 'The ICEBERG workflow middleware ',
     'long_description'   : (read('README.md') + '\n\n' + read('CHANGES.md')),
     'author'             : 'ICEBERG Team',
-    'author_email'       : 'icberg-ci@googlegroups.com',
+    'author_email'       : 'iceberg-ci@googlegroups.com',
     'url'                : 'https://www.github.com/iceberg-project/iceberg-middleware/',
     'license'            : '',
     'classifiers'        : [
@@ -192,7 +192,7 @@ setup_args = {
 
     'zip_safe'          : False,
     'scripts'           : ['bin/iceberg'
-                           ],
+                           ]
   # 'build_sphinx'       : {
   #     'source-dir'     : 'docs/',
   #     'build-dir'      : 'docs/build',
