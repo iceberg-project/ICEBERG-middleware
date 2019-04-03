@@ -12,7 +12,7 @@ import mock
 
 # ------------------------------------------------------------------------------
 #
-def test_init()):
+def test_init():
     """
     Dummy test until the actual start to appear.
     """

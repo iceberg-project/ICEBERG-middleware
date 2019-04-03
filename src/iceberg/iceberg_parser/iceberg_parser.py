@@ -41,7 +41,7 @@ class IcebergParser(object):
 
         if len(sys.argv) < 9:
             parser.print_help()
-            if '--help' in sys.argv or '-h' in sys.argv:
+            if '--help' in sys.argv:
                 argv = sys.argv.remove('--help')
             elif '-h' in sys.argv:
                 argv = sys.argv.remove('-h')
