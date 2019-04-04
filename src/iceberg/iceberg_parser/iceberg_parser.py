@@ -7,6 +7,7 @@ Copyright: 2018-2019
 from __future__ import print_function
 import argparse
 import sys
+from collections import defaultdict
 
 
 class IcebergParser(object):
@@ -39,16 +40,35 @@ class IcebergParser(object):
         required_args.add_argument('--analysis', '-a', help='The type of analysis to be executed',
                                    type=str)
 
-        if len(sys.argv) < 9:
-            parser.print_help()
-            argv = sys.argv
-            if '--help' in argv:
-                argv.remove('--help')
-            elif '-h' in argv:
-                argv.remove('-h')
+        if 'python' in sys.argv[0]:
+            argvs = sys.argv[2:]
+        else:
+            argvs = sys.argv[1:]
+        actual_argvs = list()
+        while argvs:
+            argv = argvs.pop(0)
+            if '=' in argv:
+                actual_argvs.append(argv)
+            elif '--' in argv and not '=' in argv and argv not in ['--help','-h']:
+                temp_argv = argv
+                argv = argvs.pop(0)
+                actual_argvs.append(temp_argv + '=' + argv)
+            elif '-' in argv and not '=' in argv and argv not in ['--help','-h']:
+                temp_argv = argv
+                argv = argvs.pop(0)
+                actual_argvs.append(temp_argv + '=' + argv)
+            elif argv in ['--help','-h']:
+                actual_argvs.append(argv)
 
-            if len(argv) > 1:
-                args = parser.parse_args(argv[1:])
+        if len(actual_argvs) < 8:
+            parser.print_help()
+            if '--help' in actual_argvs:
+                actual_argvs.remove('--help')
+            elif '-h' in actual_argvs:
+                actual_argvs.remove('-h')
+
+            if len(actual_argvs) >= 1:
+                args = parser.parse_args(actual_argvs)
                 if args.analysis:
                     usecase = args.analysis
                     if usecase and usecase == '4DGeolocation':
@@ -59,7 +79,7 @@ class IcebergParser(object):
                         getattr(self, usecase)(show_help=True)
             exit(1)
         else:
-            args = parser.parse_args(sys.argv[1:9])
+            args = parser.parse_args(actual_argvs[0:8])
 
         if args.analysis == '4DGeolocation':
             usecase = 'four_d_geolocation'
@@ -72,13 +92,15 @@ class IcebergParser(object):
             exit(1)
         # use dispatch pattern to invoke method with same name
         self._usecase_args = None
-        getattr(self, usecase)()
+        getattr(self, usecase)(argvs=actual_argvs[8:])
         self._args = args
 
-    def seals(self, show_help=False):
+
+    def seals(self, argvs=None, show_help=False):
         """
         Additional arguments for the Seals Use Case
         """
+        print('Seals')
         seals_args = argparse.ArgumentParser(description='These are the options for Seals type \
                                              analysis.', usage=argparse.SUPPRESS)
         seals_args.add_argument('--scale_bands', '-s', help='The size of the scale bands')
@@ -89,19 +111,20 @@ class IcebergParser(object):
         if show_help:
             seals_args.print_help()
             exit(1)
-        elif len(sys.argv[9:]) < 4:
+        elif len(argvs) < 4:
             print('Missing Parameters')
             seals_args.print_help()
             exit(1)
 
-        args = seals_args.parse_args(sys.argv[9:])
+        args = seals_args.parse_args(argvs)
         print('Running Seals with ', args)
         self._usecase_args = args
 
-    def penguins(self, show_help=False):
+    def penguins(self, argvs=None, show_help=False):
         """
         Additional arguments for the Penguins Use Case
         """
+        print('Penguins')
         penguins_args = argparse.ArgumentParser(description='These are the options for Penguins \
                                                 type analysis.', usage=argparse.SUPPRESS)
         penguins_args.add_argument('--scale_bands', '-s', help='The size of the scale bands')
@@ -113,19 +136,19 @@ class IcebergParser(object):
         if show_help:
             penguins_args.print_help()
             exit(1)
-        elif len(sys.argv[9:]) < 5:
+        elif len(argvs) < 5:
             print('Missing Parameters')
             penguins_args.print_help()
             exit(1)
-
-        args = penguins_args.parse_args(sys.argv[9:])
+        args = penguins_args.parse_args(argvs)
         print('Running Penguins', args)
         self._usecase_args = args
 
-    def four_d_geolocation(self, show_help=False):
+    def four_d_geolocation(self, argvs=None, show_help=False):
         """
         Additional arguments for the 4D Geolocation Use Case
         """
+        print('four_d_geolocation')
         four_d_geolocation_args = argparse.ArgumentParser(description='These are the options for \
                                                           4DGeolocaltion type analysis.',
                                                           usage=argparse.SUPPRESS)
@@ -149,19 +172,20 @@ class IcebergParser(object):
         if show_help:
             four_d_geolocation_args.print_help()
             exit(1)
-        elif len(sys.argv[9:]) < 6:
+        elif len(argvs) < 6:
             print('Missing Parameters')
             four_d_geolocation_args.print_help()
             exit(1)
 
-        args = four_d_geolocation_args.parse_args(sys.argv[9:])
+        args = four_d_geolocation_args.parse_args(argvs)
         print('Running 4DGeolocation', args)
         self._usecase_args = args
 
-    def rivers(self, show_help=False):
+    def rivers(self, argvs=None, show_help=False):
         """
         Additional arguments for the Rivers Use Case
         """
+        print('Rivers')
         rivers_args = argparse.ArgumentParser(description='These are the options for Rivers type \
                                               analysis.', usage=argparse.SUPPRESS)
         rivers_args.add_argument('--threshold', '-th', help='Minimum confidence to accept')
@@ -173,19 +197,20 @@ class IcebergParser(object):
         if show_help:
             rivers_args.print_help()
             exit(1)
-        elif len(sys.argv[9:]) < 5:
+        elif len(argvs) < 5:
             print('Missing Parameters')
             rivers_args.print_help()
             exit(1)
 
-        args = rivers_args.parse_args(sys.argv[9:])
+        args = rivers_args.parse_args(argvs)
         print('Running Rivers', args)
         self._usecase_args = args
 
-    def landcover(self, show_help=False):
+    def landcover(self, argvs=None, show_help=False):
         """
         Additional arguments for the Landcover Use Case
         """
+        print('Land Cover')
         landcover_args = argparse.ArgumentParser(description='These are the options for Landcover \
                                                  type analysis.', usage=argparse.SUPPRESS)
         landcover_args.add_argument('--spec_lib', '-sl', help='Addition of new ground data to \
@@ -199,11 +224,11 @@ class IcebergParser(object):
         if show_help:
             landcover_args.print_help()
             exit(1)
-        elif len(sys.argv[9:]) < 5:
+        elif len(argvs) < 5:
             print('Missing Parameters')
             landcover_args.print_help()
             exit(1)
 
-        args = landcover_args.parse_args(sys.argv[9:])
+        args = landcover_args.parse_args(argvs)
         print('Running Landcover', args)
         self._usecase_args = args
