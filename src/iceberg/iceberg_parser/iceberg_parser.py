@@ -40,22 +40,24 @@ class IcebergParser(object):
                                    type=str)
 
         if len(sys.argv) < 9:
+
             parser.print_help()
             if '--help' in sys.argv:
                 argv = sys.argv.remove('--help')
             elif '-h' in sys.argv:
                 argv = sys.argv.remove('-h')
-            args = parser.parse_args(argv)
-            if args.analysis:
-                if args.analysis == '4DGeolocation':
-                    usecase = 'four_d_geolocation'
-                else:
-                    usecase = args.analysis
+            if len(sys.argv) > 1:
+                args = parser.parse_args(argv)
+                if args.analysis:
+                    if args.analysis == '4DGeolocation':
+                        usecase = 'four_d_geolocation'
+                    else:
+                        usecase = args.analysis
 
-                if not hasattr(self, usecase):
-                    print('Unrecognized Analysis Type')
-                else:
-                    getattr(self, usecase)(show_help=True)
+                    if not hasattr(self, usecase):
+                        print('Unrecognized Analysis Type')
+                    else:
+                        getattr(self, usecase)(show_help=True)
             exit(1)
         else:
             args = parser.parse_args(sys.argv[1:9])
