@@ -8,6 +8,8 @@ may not correspond to the publised documentation, and specifically may have
 dependencies which need to be resolved manually.  Please contact us with an issue
 if you need advice on the usage of any non-master branch.
 
+[![Devel Build Status](https://travis-ci.com/iceberg-project/ICEBERG-middleware.svg?branch=devel)](https://travis-ci.com/iceberg-project/ICEBERG-middleware)
+
 ## Installation:
 
 To install our package you should clone the repo by running and checkout the `devel` branch:
