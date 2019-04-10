@@ -95,5 +95,5 @@ class IcebergParser(object):
 
 
         args = parser.parse_args()
-        print args
+        print(args)
         self._args = args
