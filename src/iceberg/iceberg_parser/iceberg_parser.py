@@ -6,14 +6,14 @@ Copyright: 2018-2019
 
 from __future__ import print_function
 import argparse
-import sys
 
 
 class IcebergParser(object):
     """
     This class is the argument parser of the ICEBERG software tool.
     """
-
+    # ----------------------------------------------------------------------------------------------
+    #
     def __init__(self):
         """
         The constructor
@@ -57,23 +57,22 @@ class IcebergParser(object):
         penguins_parser.add_argument('--hyperparameters', '-hy', help='Hyperparameter Set')
         penguins_parser.add_argument('--shadow_mask', '-sm')
 
-        four_d_geolocation_parser.description = 'These are the options for 4DGeolocaltion type analysis.'
+        four_d_geolocation_parser.description = 'These are the options for 4DGeolocaltion type \
+                                                 analysis.'
         four_d_geolocation_parser.add_argument('--target_path', '-t', help='Path to target images')
-        four_d_geolocation_parser.add_argument('--threshold', '-th', help='Minimum, maximum number \
-                                                                         of match points')
-        four_d_geolocation_parser.add_argument('--pixel_accuracy', '-pa', help='An accuracy threshold\
-                                                                              for output pixels \
-                                                                              when making a match')
-        four_d_geolocation_parser.add_argument('--source_image_window', '-siw', help='Subset window \
-                                                                                    of the source \
-                                                                                    image to search \
-                                                                                    within')
-        four_d_geolocation_parser.add_argument('--target_image_window', '-tiw', help='Subset window \
-                                                                                    of the target \
-                                                                                    image to search \
-                                                                                    within')
-        four_d_geolocation_parser.add_argument('--algorithm', '-a', help='which keypoint search \
-                                                                        algorithm to use')
+        four_d_geolocation_parser.add_argument('--threshold', '-th',
+                                               help='Minimum, maximum number of match points')
+        four_d_geolocation_parser.add_argument('--pixel_accuracy', '-pa',
+                                               help='An accuracy threshold for output pixels when \
+                                               making a match')
+        four_d_geolocation_parser.add_argument('--source_image_window', '-siw',
+                                               help='Subset window of the source image to search \
+                                               within')
+        four_d_geolocation_parser.add_argument('--target_image_window', '-tiw',
+                                               help='Subset window of the target image to search \
+                                               within')
+        four_d_geolocation_parser.add_argument('--algorithm', '-a',
+                                               help='which keypoint search algorithm to use')
 
         rivers_parser.description = 'These are the options for Rivers type analysis.'
         rivers_parser.add_argument('--threshold', '-th', help='Minimum confidence to accept')
@@ -83,15 +82,24 @@ class IcebergParser(object):
         rivers_parser.add_argument('--ndwi_path', '-np', help='Path to Water mask')
 
         landcover_parser.description = 'These are the options for Landcover type analysis.'
-        landcover_parser.add_argument('--spec_lib', '-sl', help='Addition of new ground data to \
-                                                               spectral library')
-        landcover_parser.add_argument('--roi_sel', '-rs', help='Selection of regions of interest for \
-                                                              atmospheric correction')
-        landcover_parser.add_argument('--atmcorr_model', '-am', help='Selection of atmospheric model')
+        landcover_parser.add_argument('--spec_lib', '-sl',
+                                      help='Addition of new ground data to spectral library')
+        landcover_parser.add_argument('--roi_sel', '-rs',
+                                      help='Selection of regions of interest for atmospheric \
+                                          correction')
+        landcover_parser.add_argument('--atmcorr_model', '-am',
+                                      help='Selection of atmospheric model')
         landcover_parser.add_argument('--landcover_lib', '-ll', help='Access landcover masks')
         landcover_parser.add_argument('--shadow_mask', '-sm')
-
 
         args = parser.parse_args()
         print(args)
         self._args = args
+
+    # ----------------------------------------------------------------------------------------------
+    #
+    def args(self):
+        """
+        Return a dictionary of the arguments
+        """
+        return vars(self._args)
