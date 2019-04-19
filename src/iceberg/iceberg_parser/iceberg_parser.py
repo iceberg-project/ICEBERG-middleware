@@ -24,21 +24,19 @@ class IcebergParser(object):
         required_args = parser.add_argument_group()
         required_args.title = 'Required Arguments'
         required_args.add_argument('--resource', '-r', help='Where the execution will happen',
-                                   type=str)
+                                   type=str, required=True)
         required_args.add_argument('--queue', '-q', help='The queue of the resource',
-                                   type=str)
+                                   type=str, required=True)
         required_args.add_argument('--cpus', '-c', help='How many CPUs will be required',
-                                   type=int)
+                                   type=int, required=True)
         required_args.add_argument('--gpus', '-g', help='How many GPUs will be required',
-                                   type=int)
+                                   type=int, required=True)
         required_args.add_argument('--input_path', '-ip', help='Where the input images are',
-                                   type=str)
+                                   type=str, required=True)
         required_args.add_argument('--output_path', '-op', help='Where the results should be saved',
-                                   type=str)
+                                   type=str, required=True)
         required_args.add_argument('--walltime', '-w', help='The estimated execution time',
-                                   type=int)
-        required_args.add_argument('--analysis', '-a', help='The type of analysis to be executed',
-                                   type=str)
+                                   type=int, required=True)
         command_args = parser.add_subparsers()
         seals_parser = command_args.add_parser('seals')
         penguins_parser = command_args.add_parser('penguins')

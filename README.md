@@ -31,14 +31,25 @@ pip install . --upgrade
 
 The ICEBERG command can be executed as follows:
 ```bash
-iceberg [-h] --resource RESOURCE --queue QUEUE --cpus CPUS --gpus GPUS
-               --input_path INPUT_PATH --output_path OUTPUT_PATH --walltime
-               WALLTIME --analysis ANALYSIS [<args>]
+iceberg [-h] [--resource RESOURCE] [--queue QUEUE] [--cpus CPUS]
+               [--gpus GPUS] [--input_path INPUT_PATH]
+               [--output_path OUTPUT_PATH] [--walltime WALLTIME]
+               [--analysis ANALYSIS]
+               {seals,penguins,4Dgeolocation,rivers,landcover} ...
+               
 ```
 
 The arguments shown are mandatory for the command to execute correctly. Executing with `-h` will
 provide the following responce:
 ```
+
+positional arguments:
+  {seals,penguins,4Dgeolocation,rivers,landcover}
+
+optional arguments:
+  -h, --help            show this help message and exit
+
+Required Arguments:
   --resource RESOURCE, -r RESOURCE
                         Where the execution will happen
   --queue QUEUE, -q QUEUE
@@ -51,11 +62,9 @@ provide the following responce:
                         Where the results should be saved
   --walltime WALLTIME, -w WALLTIME
                         The estimated execution time
-  --analysis ANALYSIS, -a ANALYSIS
-                        The type of analysis to be executed
 ```
 
-The expected analysis option takes can take the following values:
+The expected analysis commands are:
 1. seals
 2. penguins
 3. 4DGeolocation
