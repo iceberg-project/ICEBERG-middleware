@@ -6,222 +6,100 @@ Copyright: 2018-2019
 
 from __future__ import print_function
 import argparse
-import sys
 
 
 class IcebergParser(object):
     """
     This class is the argument parser of the ICEBERG software tool.
     """
-
+    # ----------------------------------------------------------------------------------------------
+    #
     def __init__(self):
         """
         The constructor
         """
         parser = argparse.ArgumentParser(description='ICEBERG command description:',
                                          epilog='''Enjoy our tool!''')
+
         required_args = parser.add_argument_group()
         required_args.title = 'Required Arguments'
         required_args.add_argument('--resource', '-r', help='Where the execution will happen',
-                                   type=str)
+                                   type=str, required=True)
         required_args.add_argument('--queue', '-q', help='The queue of the resource',
-                                   type=str)
+                                   type=str, required=True)
         required_args.add_argument('--cpus', '-c', help='How many CPUs will be required',
-                                   type=int)
+                                   type=int, required=True)
         required_args.add_argument('--gpus', '-g', help='How many GPUs will be required',
-                                   type=int)
+                                   type=int, required=True)
         required_args.add_argument('--input_path', '-ip', help='Where the input images are',
-                                   type=str)
+                                   type=str, required=True)
         required_args.add_argument('--output_path', '-op', help='Where the results should be saved',
-                                   type=str)
+                                   type=str, required=True)
         required_args.add_argument('--walltime', '-w', help='The estimated execution time',
-                                   type=int)
-        required_args.add_argument('--analysis', '-a', help='The type of analysis to be executed',
-                                   type=str)
+                                   type=int, required=True)
+        command_args = parser.add_subparsers()
+        seals_parser = command_args.add_parser('seals')
+        penguins_parser = command_args.add_parser('penguins')
+        four_d_geolocation_parser = command_args.add_parser('4Dgeolocation')
+        rivers_parser = command_args.add_parser('rivers')
+        landcover_parser = command_args.add_parser('landcover')
 
-        if 'python' in sys.argv[0]:
-            argvs = sys.argv[2:]
-        else:
-            argvs = sys.argv[1:]
+        seals_parser.description = 'These are the options for Seals type analysis.'
+        seals_parser.add_argument('--scale_bands', '-s', help='The size of the scale bands')
+        seals_parser.add_argument('--model', '-m', help='The size of the scale bands')
+        seals_parser.add_argument('--model_path', '-mp', help='Path of a custom model')
+        seals_parser.add_argument('--hyperparameters', '-hy', help='Hyperparameter Set')
 
-        actual_argvs = list()
-        while argvs:
-            argv = argvs.pop(0)
-            if '=' in argv:
-                actual_argvs.append(argv)
-            elif ('--' in argv or '-' in argv) and '=' not in argv and argv not in ['--help', '-h']:
-                temp_argv = argv
-                try:
-                    argv = argvs.pop(0)
-                    actual_argvs.append(temp_argv + '=' + argv)
-                except IndexError:
-                    actual_argvs.append(temp_argv)
-            elif argv in ['--help', '-h']:
-                actual_argvs.append(argv)
+        penguins_parser.description = 'These are the options for Penguins type analysis.'
+        penguins_parser.add_argument('--scale_bands', '-s', help='The size of the scale bands')
+        penguins_parser.add_argument('--model', '-m', help='The size of the scale bands')
+        penguins_parser.add_argument('--model_path', '-mp', help='Path of a custom model')
+        penguins_parser.add_argument('--hyperparameters', '-hy', help='Hyperparameter Set')
+        penguins_parser.add_argument('--shadow_mask', '-sm')
 
-        if len(actual_argvs) < 8:
-            parser.print_help()
-            if '--help' in actual_argvs:
-                actual_argvs.remove('--help')
-            elif '-h' in actual_argvs:
-                actual_argvs.remove('-h')
+        four_d_geolocation_parser.description = 'These are the options for 4DGeolocaltion type \
+                                                 analysis.'
+        four_d_geolocation_parser.add_argument('--target_path', '-t', help='Path to target images')
+        four_d_geolocation_parser.add_argument('--threshold', '-th',
+                                               help='Minimum, maximum number of match points')
+        four_d_geolocation_parser.add_argument('--pixel_accuracy', '-pa',
+                                               help='An accuracy threshold for output pixels when \
+                                               making a match')
+        four_d_geolocation_parser.add_argument('--source_image_window', '-siw',
+                                               help='Subset window of the source image to search \
+                                               within')
+        four_d_geolocation_parser.add_argument('--target_image_window', '-tiw',
+                                               help='Subset window of the target image to search \
+                                               within')
+        four_d_geolocation_parser.add_argument('--algorithm', '-a',
+                                               help='which keypoint search algorithm to use')
 
-            if actual_argvs:
-                args = parser.parse_args(actual_argvs)
-                if args.analysis:
-                    usecase = args.analysis
-                    if usecase == '4DGeolocation':
-                        usecase = 'four_d_geolocation'
-                    if not hasattr(self, usecase):
-                        print('Unrecognized Analysis Type')
-                    else:
-                        getattr(self, usecase)(show_help=True)
-            exit(1)
+        rivers_parser.description = 'These are the options for Rivers type analysis.'
+        rivers_parser.add_argument('--threshold', '-th', help='Minimum confidence to accept')
+        rivers_parser.add_argument('--hyperparameters', '-hy')
+        rivers_parser.add_argument('--model', '-m', help='The size of the scale bands')
+        rivers_parser.add_argument('--model_path', '-mp', help='Path of a custom model')
+        rivers_parser.add_argument('--ndwi_path', '-np', help='Path to Water mask')
 
-        args = parser.parse_args(actual_argvs[0:8])
+        landcover_parser.description = 'These are the options for Landcover type analysis.'
+        landcover_parser.add_argument('--spec_lib', '-sl',
+                                      help='Addition of new ground data to spectral library')
+        landcover_parser.add_argument('--roi_sel', '-rs',
+                                      help='Selection of regions of interest for atmospheric \
+                                          correction')
+        landcover_parser.add_argument('--atmcorr_model', '-am',
+                                      help='Selection of atmospheric model')
+        landcover_parser.add_argument('--landcover_lib', '-ll', help='Access landcover masks')
+        landcover_parser.add_argument('--shadow_mask', '-sm')
 
-        if args.analysis == '4DGeolocation':
-            usecase = 'four_d_geolocation'
-        else:
-            usecase = args.analysis
-
-        if not hasattr(self, usecase):
-            print('Unrecognized Analysis Type')
-            parser.print_help()
-            exit(1)
-        # use dispatch pattern to invoke method with same name
-        self._usecase_args = None
-        getattr(self, usecase)(argvs=actual_argvs[8:])
+        args = parser.parse_args()
+        print(args)
         self._args = args
 
-    def seals(self, argvs=None, show_help=False):
+    # ----------------------------------------------------------------------------------------------
+    #
+    def args(self):
         """
-        Additional arguments for the Seals Use Case
+        Return a dictionary of the arguments
         """
-        seals_args = argparse.ArgumentParser(description='These are the options for Seals type \
-                                             analysis.', usage=argparse.SUPPRESS)
-        seals_args.add_argument('--scale_bands', '-s', help='The size of the scale bands')
-        seals_args.add_argument('--model', '-m', help='The size of the scale bands')
-        seals_args.add_argument('--model_path', '-mp', help='Path of a custom model')
-        seals_args.add_argument('--hyperparameters', '-hy', help='Hyperparameter Set')
-
-        if show_help:
-            seals_args.print_help()
-            exit(1)
-        elif len(argvs) < 4:
-            print('Missing Parameters')
-            seals_args.print_help()
-            exit(1)
-
-        args = seals_args.parse_args(argvs)
-        print('Running Seals with ', args)
-        self._usecase_args = args
-
-    def penguins(self, argvs=None, show_help=False):
-        """
-        Additional arguments for the Penguins Use Case
-        """
-        penguins_args = argparse.ArgumentParser(description='These are the options for Penguins \
-                                                type analysis.', usage=argparse.SUPPRESS)
-        penguins_args.add_argument('--scale_bands', '-s', help='The size of the scale bands')
-        penguins_args.add_argument('--model', '-m', help='The size of the scale bands')
-        penguins_args.add_argument('--model_path', '-mp', help='Path of a custom model')
-        penguins_args.add_argument('--hyperparameters', '-hy', help='Hyperparameter Set')
-        penguins_args.add_argument('--shadow_mask', '-sm')
-
-        if show_help:
-            penguins_args.print_help()
-            exit(1)
-        elif len(argvs) < 5:
-            print('Missing Parameters')
-            penguins_args.print_help()
-            exit(1)
-        args = penguins_args.parse_args(argvs)
-        print('Running Penguins', args)
-        self._usecase_args = args
-
-    def four_d_geolocation(self, argvs=None, show_help=False):
-        """
-        Additional arguments for the 4D Geolocation Use Case
-        """
-        four_d_geolocation_args = argparse.ArgumentParser(description='These are the options for \
-                                                          4DGeolocaltion type analysis.',
-                                                          usage=argparse.SUPPRESS)
-        four_d_geolocation_args.add_argument('--target_path', '-t', help='Path to target images')
-        four_d_geolocation_args.add_argument('--threshold', '-th', help='Minimum, maximum number \
-                                                                         of match points')
-        four_d_geolocation_args.add_argument('--pixel_accuracy', '-pa', help='An accuracy threshold\
-                                                                              for output pixels \
-                                                                              when making a match')
-        four_d_geolocation_args.add_argument('--source_image_window', '-siw', help='Subset window \
-                                                                                    of the source \
-                                                                                    image to search \
-                                                                                    within')
-        four_d_geolocation_args.add_argument('--target_image_window', '-tiw', help='Subset window \
-                                                                                    of the target \
-                                                                                    image to search \
-                                                                                    within')
-        four_d_geolocation_args.add_argument('--algorithm', '-a', help='which keypoint search \
-                                                                        algorithm to use')
-
-        if show_help:
-            four_d_geolocation_args.print_help()
-            exit(1)
-        elif len(argvs) < 6:
-            print('Missing Parameters')
-            four_d_geolocation_args.print_help()
-            exit(1)
-
-        args = four_d_geolocation_args.parse_args(argvs)
-        print('Running 4DGeolocation', args)
-        self._usecase_args = args
-
-    def rivers(self, argvs=None, show_help=False):
-        """
-        Additional arguments for the Rivers Use Case
-        """
-        rivers_args = argparse.ArgumentParser(description='These are the options for Rivers type \
-                                              analysis.', usage=argparse.SUPPRESS)
-        rivers_args.add_argument('--threshold', '-th', help='Minimum confidence to accept')
-        rivers_args.add_argument('--hyperparameters', '-hy')
-        rivers_args.add_argument('--model', '-m', help='The size of the scale bands')
-        rivers_args.add_argument('--model_path', '-mp', help='Path of a custom model')
-        rivers_args.add_argument('--ndwi_path', '-np', help='Path to Water mask')
-
-        if show_help:
-            rivers_args.print_help()
-            exit(1)
-        elif len(argvs) < 5:
-            print('Missing Parameters')
-            rivers_args.print_help()
-            exit(1)
-
-        args = rivers_args.parse_args(argvs)
-        print('Running Rivers', args)
-        self._usecase_args = args
-
-    def landcover(self, argvs=None, show_help=False):
-        """
-        Additional arguments for the Landcover Use Case
-        """
-        landcover_args = argparse.ArgumentParser(description='These are the options for Landcover \
-                                                 type analysis.', usage=argparse.SUPPRESS)
-        landcover_args.add_argument('--spec_lib', '-sl', help='Addition of new ground data to \
-                                                               spectral library')
-        landcover_args.add_argument('--roi_sel', '-rs', help='Selection of regions of interest for \
-                                                              atmospheric correction')
-        landcover_args.add_argument('--atmcorr_model', '-am', help='Selection of atmospheric model')
-        landcover_args.add_argument('--landcover_lib', '-ll', help='Access landcover masks')
-        landcover_args.add_argument('--shadow_mask', '-sm')
-
-        if show_help:
-            landcover_args.print_help()
-            exit(1)
-        elif len(argvs) < 5:
-            print('Missing Parameters')
-            landcover_args.print_help()
-            exit(1)
-
-        args = landcover_args.parse_args(argvs)
-        print('Running Landcover', args)
-        self._usecase_args = args
+        return vars(self._args)
