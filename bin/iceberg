@@ -9,4 +9,5 @@ import argparse
 from iceberg.iceberg_parser import IcebergParser
 
 if __name__ == "__main__":
-    IcebergParser()
+    testvalues = IcebergParser().args()
+    print testvalues
