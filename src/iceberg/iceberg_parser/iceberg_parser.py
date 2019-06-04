@@ -20,6 +20,8 @@ class IcebergParser(object):
         """
         The constructor
         """
+
+        self._args= dict()
         if '--config' in sys.argv:
             parser = argparse.ArgumentParser()
 
@@ -28,9 +30,7 @@ class IcebergParser(object):
 
             cfg_arg = parser.parse_args()
             with open(cfg_arg.config) as cfg:
-                args = json.load(cfg)
-            print(args)
-
+                tmp_args = json.load(cfg)
         else:
             parser = argparse.ArgumentParser(description='ICEBERG command \
                                              description:',
@@ -38,25 +38,30 @@ class IcebergParser(object):
 
             required_args = parser.add_argument_group()
             required_args.title = 'Required Arguments'
-            required_args.add_argument('--resource', '-r', help='Where the \
-                                       execution will happen', type=str,
-                                       required=True)
-            required_args.add_argument('--queue', '-q', help='The queue of the \
-                                       resource', type=str, required=True)
-            required_args.add_argument('--cpus', '-c', help='How many CPUs \
-                                       will be required', type=int,
-                                       required=True)
-            required_args.add_argument('--gpus', '-g', help='How many GPUs \
-                                       will be required', type=int,
-                                       required=True)
-            required_args.add_argument('--input_path', '-ip', help='Where the \
-                                       input images are', type=str,
-                                       required=True)
-            required_args.add_argument('--output_path', '-op', help='Where the \
-                                       results should be saved', type=str,
-                                       required=True)
-            required_args.add_argument('--walltime', '-w', help='The estimated \
-                                       execution time', type=int, required=True)
+            required_args.add_argument('--resource', '-r',
+                                       help='Where the execution will happen',
+                                       type=str, required=True)
+            required_args.add_argument('--queue', '-q',
+                                       help='The queue of the resource',
+                                       type=str, required=True)
+            required_args.add_argument('--cpus', '-c',
+                                       help='How many CPUs will be required',
+                                       type=int, required=True)
+            required_args.add_argument('--gpus', '-g',
+                                       help='How many GPUs will be required',
+                                       type=int, required=True)
+            required_args.add_argument('--input_path', '-ip',
+                                       help='Where the input images are',
+                                       type=str, required=True)
+            required_args.add_argument('--output_path', '-op',
+                                       help='Where the results should be saved',
+                                       type=str, required=True)
+            required_args.add_argument('--walltime', '-w',
+                                       help='The estimated execution time',
+                                       type=int, required=True)
+            required_args.add_argument('--project', '-pr',
+                                       help='The project ID to charge',
+                                       type=str, required=True)
 
             command_args = parser.add_subparsers(help='commands')
             seals_parser = command_args.add_parser('seals')
@@ -140,10 +145,24 @@ class IcebergParser(object):
                                           help='Access landcover masks')
             landcover_parser.add_argument('--shadow_mask', '-sm')
 
-            args = parser.parse_args()
-            print(args)
-            args = vars(args)
-        self._args = args
+            tmp_args = parser.parse_args()
+            tmp_args = vars(tmp_args)
+        if tmp_args.get('general'):
+            self._args = tmp_args
+        else:
+            self._args['general'] = dict()
+            self._args['general']['cpus'] = tmp_args.pop('cpus')
+            self._args['general']['gpus'] = tmp_args.pop('gpus')
+            self._args['general']['resource'] = tmp_args.pop('resource')
+            self._args['general']['project'] = tmp_args.pop('project')
+            self._args['general']['queue'] = tmp_args.pop('queue')
+            self._args['general']['waltime'] = tmp_args.pop('walltime')
+            self._args['general']['input_path'] = tmp_args.pop('input_path')
+            self._args['general']['output_path'] = tmp_args.pop('output_path')
+
+            self._args['analysis'] = dict()
+            for key, value in tmp_args.iteritems():
+                self._args['analysis'][key] = value
 
     # --------------------------------------------------------------------------
     #
@@ -151,4 +170,5 @@ class IcebergParser(object):
         """
         Return a dictionary of the arguments
         """
+
         return self._args

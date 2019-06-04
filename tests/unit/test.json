@@ -1,13 +1,19 @@
-{ 
-    "scale_bands": null, 
-    "resource": "bridges", 
-    "hyperparameters": null, 
-    "cpus": 0, 
-    "queue": "gpu", 
-    "output_path": "test", 
-    "model_path": null, 
-    "which": "seals", 
-    "gpus": 5, 
-    "model": null, 
-    "input_path": "test", 
-    "walltime": 13}
+{
+    "general": {
+        "cpus": 1,
+        "gpus": 1,
+        "resource": "xsede.briges",
+        "project": "tg-...",
+        "queue": "GPU",
+        "waltime": 30,
+        "input_path": "test/",
+        "output_path": "test/"
+    },
+    "analysis":{
+        "scale_bands": null, 
+        "hyperparameters": null, 
+        "model_path": null, 
+        "which": "seals", 
+        "model": null
+    }
+}
