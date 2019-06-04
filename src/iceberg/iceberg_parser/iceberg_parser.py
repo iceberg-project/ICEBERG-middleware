@@ -21,7 +21,7 @@ class IcebergParser(object):
         The constructor
         """
 
-        self._args= dict()
+        self._args = dict()
         if '--config' in sys.argv:
             parser = argparse.ArgumentParser()
 
