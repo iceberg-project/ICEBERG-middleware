@@ -161,6 +161,7 @@ class IcebergParser(object):
             self._args['general']['output_path'] = tmp_args.pop('output_path')
 
             self._args['analysis'] = dict()
+            self._args['analysis']['which'] = tmp_args.pop('which')
             for key, value in tmp_args.iteritems():
                 self._args['analysis'][key] = value
 
