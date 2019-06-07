@@ -1,0 +1,19 @@
+{
+    "general": {
+        "cpus": 1,
+        "gpus": 1,
+        "resource": "xsede.briges",
+        "project": "tg-...",
+        "queue": "GPU",
+        "waltime": 30,
+        "input_path": "test/",
+        "output_path": "test/"
+    },
+    "analysis":{
+        "scale_bands": null, 
+        "hyperparameters": null, 
+        "model_path": null, 
+        "which": "seals", 
+        "model": null
+    }
+}
