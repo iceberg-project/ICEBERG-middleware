@@ -4,7 +4,8 @@ License: MIT
 Copyright: 2018-2019
 """
 
-from radical.entk import Pipeline, Stage, Task
+import radical.entk as re
+
 
 class Discovery(object):
     '''
@@ -28,12 +29,13 @@ class Discovery(object):
         This function takes as an input paths on Bridges and returns a pipeline
         that will provide a file for all the images that exist in that path.
         '''
-        pipeline = Pipeline()
+        pipeline = re.Pipeline()
         pipeline.name = 'Disc'
-        stage = Stage()
+        stage = re.Stage()
         stage.name = 'Disc-S0'
-        if not self._paths:
-            RuntimeError('Images paths are not set.')
+
+        if self._paths is None:
+            raise RuntimeError('Images paths are not set.')
 
         # Create the module load list
         modules_load = list()
@@ -43,11 +45,11 @@ class Discovery(object):
                 modules_load.append(tmp_load)
 
         for i in range(len(self._paths)):
-            task = Task()
+            task = re.Task()
             task.name = 'Disc-T%d' % i
             task.pre_exec = modules_load
             task.executable = 'python'   # Assign executable to the task
-            task.arguments = ['image_disc.py', '%s' % self._path[i],
+            task.arguments = ['image_disc.py', '%s' % self._paths[i],
                               '--filename=images%d' % i,
                               '--filetype=%s' % filetype, '--filesize']
             task.download_output_data = ['images.csv']

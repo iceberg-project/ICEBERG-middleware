@@ -14,7 +14,7 @@ import math
 import pandas as pd
 
 
-def image_discovery(path, filename='list.csv', filesize=False):
+def image_discovery(path, filename='list', filetype='csv', filesize=False):
     """
     This function creates a dataframe with image names and size from a path.
     :Arguments:
@@ -36,17 +36,19 @@ def image_discovery(path, filename='list.csv', filesize=False):
         for filepath in filepaths:
             dataset_df.loc[len(dataset_df)] = [filepath]
 
-    dataset_df.to_csv(filename, index=False)
+    dataset_df.to_csv(filename + '.' + filetype, index=False)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('path', help='Path to a remote resource where data \
                         are')
-    parser.add_argument('--filename', type=str, default='list.csv',
-                        help='Name of the output CSV file')
+    parser.add_argument('--filename', type=str, default='list',
+                        help='Name of the output file')
+    parser.add_argument('--filetype', type=str, default='csv',
+                        help='Type of the output file')
     parser.add_argument('--filesize', help='Include the filesize to the \
                         output CSV', action='store_true')
     args = parser.parse_args()
 
-    image_discovery(args.path, args.filename, args.filesize)
+    image_discovery(args.path, args.filename, args.filtype, args.filesize)
