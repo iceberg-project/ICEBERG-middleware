@@ -19,10 +19,11 @@ class Discovery(object):
                 Default value to None
     '''
 
-    def __init__(self, modules=None, paths=None):
+    def __init__(self, modules=None, paths=None, pre_execs=None):
 
         self._modules = modules
         self._paths = paths
+        self._pre_execs = pre_execs
 
     def generate_discover_pipeline(self, filetype='csv'):
         '''
@@ -44,10 +45,18 @@ class Discovery(object):
                 tmp_load = 'module load %s' % module
                 modules_load.append(tmp_load)
 
+        if self._pre_execs:
+            if isinstance(self._pre_execs, list):
+                tmp_pre_execs = modules_load + self._pre_execs
+            else:
+                tmp_pre_execs = modules_load + [self._pre_execs]
+        else:
+            tmp_pre_execs = modules_load
+
         for i in range(len(self._paths)):
             task = re.Task()
             task.name = 'Disc-T%d' % i
-            task.pre_exec = modules_load
+            task.pre_exec = tmp_pre_execs
             task.executable = 'python'   # Assign executable to the task
             task.arguments = ['image_disc.py', '%s' % self._paths[i],
                               '--filename=images%d' % i,

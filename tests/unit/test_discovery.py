@@ -44,6 +44,7 @@ def test_generate_pipeline(mocked_init):
     component = Discovery()
     component._modules = None
     component._paths = ['test']
+    component._pre_execs = None
 
     test_pipeline = component.generate_discover_pipeline()
     assert test_pipeline.name == 'Disc'
@@ -67,6 +68,7 @@ def test_generate_pipeline(mocked_init):
     component = Discovery()
     component._modules = ['test_module']
     component._paths = ['test']
+    component._pre_execs = None
 
     test_pipeline = component.generate_discover_pipeline()
     assert test_pipeline.name == 'Disc'
