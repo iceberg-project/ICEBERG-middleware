@@ -10,6 +10,7 @@ import os
 from .executor import Executor
 from ..discovery import Discovery
 
+
 class Seals(Executor):
     '''
     :Class Seals:
@@ -49,8 +50,8 @@ class Seals(Executor):
                                  'python3', 'cuda']
 
             self._pre_execs = ['source $SCRATCH/pytorchCuda/bin/activate',
-                               'export PYTHONPATH=$SCRATCH/pytorchCuda/lib/' +
-                               'python3.5/site-packages:$PYTHONPATH']
+                               'export PYTHONPATH=$SCRATCH/pytorchCuda/lib/'
+                               + 'python3.5/site-packages:$PYTHONPATH']
 
         self._logger.info('Seals initialized')
 
@@ -69,8 +70,8 @@ class Seals(Executor):
         '''
         Private method that creates and executes the workflow of the use case.
         '''
-        self._app_manager.shared_data = [os.path.abspath(self._model_path +
-                                                         self._model_name)]
+        self._app_manager.shared_data = [os.path.abspath(self._model_path
+                                                         + self._model_name)]
         self._logger.debug('Uploaded model %s',
                            os.path.abspath(self._model_path + self._model_name))
         discovery = Discovery(modules=self._req_modules,

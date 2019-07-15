@@ -37,7 +37,7 @@ class Discovery(object):
                 self._paths = paths
             else:
                 self._paths = [paths]
-        
+
         if pre_execs:
             if isinstance(pre_execs, list):
                 self._pre_execs = pre_execs
@@ -80,7 +80,7 @@ class Discovery(object):
             task.download_output_data = ['images%d.csv' % i]
             task.upload_input_data = [os.path.dirname(os.path.abspath(__file__))
                                       + '/image_disc.py']
-            task.cpu_reqs = {'processes': 1, 'process_type':'',
+            task.cpu_reqs = {'processes': 1, 'process_type': '',
                              'threads_per_process': 1,
                              'thread_type': 'OpenMP'}
             stage.add_tasks(task)
