@@ -1,3 +1,2 @@
 [run]
-include =
- $LOC/lib/python2.7/site-packages/iceberg/*
+source = $LOC/lib/python2.7/site-packages/iceberg/
