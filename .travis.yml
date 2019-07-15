@@ -31,6 +31,7 @@ before_install:
   - pip install flake8
   - pip install pylint
   - pip install codecov
+  - pip install .
 
    
 script:
