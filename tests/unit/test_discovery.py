@@ -20,18 +20,22 @@ def test_init():
     component = Discovery()
     assert component._modules is None
     assert component._paths is None
+    assert component._pre_execs is None
 
     component = Discovery(paths=['test', 'test'])
     assert component._paths == ['test', 'test']
     assert component._modules is None
+    assert component._pre_execs is None
 
     component = Discovery(modules=['test', 'test'])
     assert component._modules == ['test', 'test']
     assert component._paths is None
+    assert component._pre_execs is None
 
     component = Discovery(modules=['test', 'test'], paths=['test', 'test'])
     assert component._modules == ['test', 'test']
     assert component._paths == ['test', 'test']
+    assert component._pre_execs is None
 
 # ------------------------------------------------------------------------------
 #

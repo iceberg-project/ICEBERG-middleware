@@ -23,17 +23,16 @@ class Seals(Executor):
         :hyperparameters: Hyperparameter Set
     '''
 
-    def __init__(self, name, resource, queue, walltime, cpus, gpus=0,
-                 project=None, input_path=None, output_path=None,
-                 scale_bands=None, model=None, model_path=None,
-                 hyperparameters=None):
+    def __init__(self, name, resources, project=None, input_path=None,
+                 output_path=None, scale_bands=None, model=None,
+                 model_path=None, hyperparameters=None):
 
         super(Seals, self).__init__(name=name,
-                                    resource=resource,
-                                    queue=queue,
-                                    walltime=walltime,
-                                    cpus=cpus,
-                                    gpus=gpus,
+                                    resource=resources['resource'],
+                                    queue=resources['queue'],
+                                    walltime=resources['walltime'],
+                                    cpus=resources['cpus'],
+                                    gpus=resources['gpus'],
                                     project=project)
         self._data_input_path = input_path
         self._output_path = output_path
@@ -72,7 +71,8 @@ class Seals(Executor):
         '''
         self._app_manager.shared_data = [os.path.abspath(self._model_path +
                                                          self._model_name)]
-        self._logger.debug('Uploaded model %s', os.path.abspath(self._model_path + self._model_name))
+        self._logger.debug('Uploaded model %s',
+                           os.path.abspath(self._model_path + self._model_name))
         discovery = Discovery(modules=self._req_modules,
                               paths=self._data_input_path,
                               pre_execs=self._pre_execs)
