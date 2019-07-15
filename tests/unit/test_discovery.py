@@ -5,6 +5,8 @@ Copyright: 2018-2019
 """
 # pylint: disable=protected-access, unused-argument, unused-import
 
+import os
+import inspect
 import mock
 import pytest
 
@@ -44,7 +46,7 @@ def test_generate_pipeline(mocked_init):
     """
     Test generate pipeline
     """
-
+    module_path = os.path.dirname(inspect.getabsfile(Discovery))
     component = Discovery()
     component._modules = None
     component._paths = ['test']
@@ -63,9 +65,9 @@ def test_generate_pipeline(mocked_init):
         assert task.arguments == ['image_disc.py', 'test',
                                   '--filename=images0',
                                   '--filetype=csv', '--filesize']
-        assert task.download_output_data == ['images.csv']
-        assert task.upload_input_data == ['image_disc.py']
-        assert task.cpu_reqs == {'process_type': None, 'processes': 1,
+        assert task.download_output_data == ['images0.csv']
+        assert task.upload_input_data == [module_path + '/image_disc.py']
+        assert task.cpu_reqs == {'process_type': '', 'processes': 1,
                                  'threads_per_process': 1,
                                  'thread_type': 'OpenMP'}
 
@@ -87,9 +89,9 @@ def test_generate_pipeline(mocked_init):
         assert task.arguments == ['image_disc.py', 'test',
                                   '--filename=images0',
                                   '--filetype=csv', '--filesize']
-        assert task.download_output_data == ['images.csv']
-        assert task.upload_input_data == ['image_disc.py']
-        assert task.cpu_reqs == {'process_type': None, 'processes': 1,
+        assert task.download_output_data == ['images0.csv']
+        assert task.upload_input_data == [module_path + '/image_disc.py']
+        assert task.cpu_reqs == {'process_type': '', 'processes': 1,
                                  'threads_per_process': 1,
                                  'thread_type': 'OpenMP'}
 

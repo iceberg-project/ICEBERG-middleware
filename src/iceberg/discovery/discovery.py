@@ -24,7 +24,7 @@ class Discovery(object):
 
         self._modules = None
         self._pre_execs = None
-        self._path = None
+        self._paths = None
 
         if modules:
             if isinstance(modules, list):
@@ -32,15 +32,17 @@ class Discovery(object):
             else:
                 self._modules = [modules]
 
-        if isinstance(paths, list):
-            self._paths = paths
-        else:
-            self._paths = [paths]
-
-        if isinstance(pre_execs, list):
-            self._pre_execs = pre_execs
-        else:
-            self._pre_execs = [pre_execs]
+        if paths:
+            if isinstance(paths, list):
+                self._paths = paths
+            else:
+                self._paths = [paths]
+        
+        if pre_execs:
+            if isinstance(pre_execs, list):
+                self._pre_execs = pre_execs
+            else:
+                self._pre_execs = [pre_execs]
 
     def generate_discover_pipeline(self, filetype='csv'):
         '''
@@ -63,10 +65,7 @@ class Discovery(object):
                 modules_load.append(tmp_load)
 
         if self._pre_execs:
-            if isinstance(self._pre_execs, list):
-                tmp_pre_execs = modules_load + self._pre_execs
-            else:
-                tmp_pre_execs = modules_load + [self._pre_execs]
+            tmp_pre_execs = modules_load + self._pre_execs
         else:
             tmp_pre_execs = modules_load
 
