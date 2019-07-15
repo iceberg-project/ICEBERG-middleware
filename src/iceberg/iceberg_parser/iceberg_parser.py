@@ -43,7 +43,7 @@ class IcebergParser(object):
                                        type=str, required=True)
             required_args.add_argument('--queue', '-q',
                                        help='The queue of the resource',
-                                       type=str, required=True)
+                                       type=str, default=None)
             required_args.add_argument('--cpus', '-c',
                                        help='How many CPUs will be required',
                                        type=int, required=True)
@@ -61,7 +61,7 @@ class IcebergParser(object):
                                        type=int, required=True)
             required_args.add_argument('--project', '-pr',
                                        help='The project ID to charge',
-                                       type=str, required=True)
+                                       type=str, default=None)
 
             command_args = parser.add_subparsers(help='commands')
             seals_parser = command_args.add_parser('seals')

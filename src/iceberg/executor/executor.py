@@ -23,26 +23,34 @@ class Executor(object):
         :project: The project that will be charged
     '''
 
-    def __init__(self, name, resource, queue, walltime, cpus, gpus=0,
-                 project=None):
+    def __init__(self, name, resource, walltime, cpus, gpus=0,
+                 project=None, queue=None):
 
         self._res_dict = {'resource': resource,
                           'walltime': walltime,
                           'cpus': cpus,
-                          'gpus': gpus,
-                          'schema': 'gsissh',
-                          'project': project,
-                          'queue':queue}
+                          'gpus': gpus}
+
+        if project:
+            self._res_dict['project'] = project
+
+        if queue:
+            self._res_dict['queue'] = queue
+
+        if 'local.localhost' in resource:
+            self._res_dict['schema'] = 'ssh'
+        else:
+            self._res_dict['schema'] = 'gsissh'
 
         self._app_manager = re.AppManager(port=32773,
                                           hostname='localhost',
                                           name=name,
                                           autoterminate=False,
-                                          write_workflow=True)
+                                          write_workflow=False)
 
-        self._app_manager.resource_dict = self._res_dict
+        self._app_manager.resource_desc = self._res_dict
 
-        self._logger = ru.Logger(name='iceberg-middleware', level='INFO')
+        self._logger = ru.Logger(name='iceberg-middleware', level='DEBUG')
 
     def run(self):
         '''

@@ -41,6 +41,8 @@ class Seals(Executor):
         self._model_name = model
         self._model_path = model_path
         self._hyperparam = hyperparameters
+        self._req_modules = None
+        self._pre_execs = None
 
         if self._res_dict['resource'] == 'xsede.bridges':
 
@@ -51,15 +53,18 @@ class Seals(Executor):
                                'export PYTHONPATH=$SCRATCH/pytorchCuda/lib/' +
                                'python3.5/site-packages:$PYTHONPATH']
 
+        self._logger.info('Seals initialized')
+
     def run(self):
         '''
         This is a blocking execution method. This method should be called to
         execute the usecase.
         '''
-
-        self._run_workflow()
-
-        self._terminate()
+        try:
+            self._logger.debug('Running workflow')
+            self._run_workflow()
+        finally:
+            self._terminate()
 
     def _run_workflow(self):
         '''
@@ -67,7 +72,7 @@ class Seals(Executor):
         '''
         self._app_manager.shared_data = [os.path.abspath(self._model_path +
                                                          self._model_name)]
-
+        self._logger.debug('Uploaded model %s', os.path.abspath(self._model_path + self._model_name))
         discovery = Discovery(modules=self._req_modules,
                               paths=self._data_input_path,
                               pre_execs=self._pre_execs)

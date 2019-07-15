@@ -6,6 +6,7 @@ Copyright: 2018-2019
 """
 
 import argparse
+import radical.utils as ru
 from iceberg.iceberg_parser import IcebergParser
 from iceberg.executor import Seals
 
@@ -14,7 +15,7 @@ if __name__ == "__main__":
     parsed_values = IcebergParser().args()
     print parsed_values
     if parsed_values['analysis']['which'] == 'seals':
-        exec_obj = Seals(name='Test',
+        exec_obj = Seals(name=ru.generate_id('seals.%(item_counter)04d',mode=ru.ID_CUSTOM,namespace='seals'),
                          resource=parsed_values['general']['resource'],
                          queue=parsed_values['general']['queue'],
                          walltime=parsed_values['general']['waltime'],
@@ -29,4 +30,6 @@ if __name__ == "__main__":
                          hyperparameters=parsed_values['analysis']['hyperparameters'])
     else:
         raise RuntimeError('Analysis %s not supported yet' %
-                           parsed_values['analysis']['whiche'])
+                           parsed_values['analysis']['which'])
+
+    exec_obj.run()
