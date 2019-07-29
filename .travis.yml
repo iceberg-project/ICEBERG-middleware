@@ -19,8 +19,8 @@ env:
     - CMD2="flake8 --config=.flake8rc src"
     - CMD3="pylint src"
     - COVERAGE=false
-    - CODECOV_TOKEN="793073d1-fd78-44b9-b313-5d55293ec113"
-  matrix:
+    - CODECOV_TOKEN="f570867d-3232-4621-bd08-0dd0cc7b7d09"
+  matrix:             
     - MAIN_CMD=$CMD1 COVERAGE=true
     - MAIN_CMD=$CMD2
     - MAIN_CMD=$CMD3
@@ -31,6 +31,7 @@ before_install:
   - pip install flake8
   - pip install pylint
   - pip install codecov
+  - pip install .
 
    
 script:
