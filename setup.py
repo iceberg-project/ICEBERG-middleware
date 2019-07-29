@@ -161,8 +161,9 @@ def read(fname):
 setup_args = {
     'name'               : name,
     'version'            : version,
-    'description'        : 'The ICEBERG workflow middleware ',
+    'description'        : 'The ICEBERG workflow middleware',
     'long_description'   : (read('README.md') + '\n\n' + read('CHANGES.md')),
+    'long_description_content_type' : "text/markdown",
     'author'             : 'ICEBERG Team',
     'author_email'       : 'iceberg-ci@googlegroups.com',
     'url'                : 'https://www.github.com/iceberg-project/iceberg-middleware/',
