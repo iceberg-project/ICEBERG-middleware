@@ -30,6 +30,7 @@ if __name__ == "__main__":
                          scale_bands=parsed_values['analysis']['scale_bands'],
                          model=parsed_values['analysis']['model'],
                          model_path=parsed_values['analysis']['model_path'],
+                         model_arch=parsed_values['analysis']['model_arch'],
                          hyperparameters=parsed_values['analysis']['hyperparameters'])
     else:
         raise RuntimeError('Analysis %s not supported yet' %
