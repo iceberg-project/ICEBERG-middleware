@@ -112,7 +112,7 @@ class Seals(Executor):
         task0.executable = 'iceberg_seals.tilling'   # Assign executable to the task
         # Assign arguments for the task executable
         task0.arguments = ['--scale_bands=%s' % self._scale_bands,
-                           '--input_image=%s' % image.split('/')[-1],
+                           '--input_image=%s' % image,
                            # This line points to the local filesystem of the node
                            # that the tiling of the image happened.
                            '--output_folder=$NODE_LFS_PATH/%s' % task0.name]
