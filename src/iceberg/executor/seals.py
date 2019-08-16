@@ -25,7 +25,7 @@ class Seals(Executor):
         :model_path: Path of a custom model
         :hyperparameters: Hyperparameter Set
     '''
-
+    # pylint: disable=too-many-arguments
     def __init__(self, name, resources, project=None, input_path=None,
                  output_path=None, scale_bands=None, model=None,
                  model_path=None, model_arch=None, hyperparameters=None):
@@ -56,6 +56,7 @@ class Seals(Executor):
                                + 'python3.5/site-packages']
 
         self._logger.info('Seals initialized')
+    # pylint: disable=too-many-arguments
 
     def run(self):
         '''
