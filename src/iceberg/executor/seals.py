@@ -49,7 +49,7 @@ class Seals(Executor):
 
         if self._res_dict['resource'] == 'xsede.bridges':
 
-            self._req_modules = ['cuda','python3']
+            self._req_modules = ['cuda', 'python3']
 
             self._pre_execs = ['source $SCRATCH/iceberg_seals/bin/activate',
                                'export PYTHONPATH=$SCRATCH/iceberg_seals/lib/'
@@ -109,12 +109,12 @@ class Seals(Executor):
         task0 = re.Task()
         task0.name = '%s-T0' % stage0.name
         task0.pre_exec = pre_execs
-        task0.executable = 'iceberg_seals.tiling'   # Assign executable to the task
+        task0.executable = 'iceberg_seals.tiling'  # Assign tak executable
         # Assign arguments for the task executable
         task0.arguments = ['--scale_bands=%s' % self._scale_bands,
                            '--input_image=%s' % image.split('/')[-1],
-                           # This line points to the local filesystem of the node
-                           # that the tiling of the image happened.
+                           # This line points to the local filesystem of the
+                           # node that the tiling of the image happened.
                            '--output_folder=$NODE_LFS_PATH/%s' % task0.name]
         task0.link_input_data = [image]
         task0.cpu_reqs = {'processes': 1, 'threads_per_process': 4,
@@ -132,7 +132,7 @@ class Seals(Executor):
         task1 = re.Task()
         task1.name = '%s-T1' % stage1.name
         task1.pre_exec = pre_execs
-        task1.executable = 'iceberg_seals.predicting'   # Assign executable to the task
+        task1.executable = 'iceberg_seals.predicting'  # Assign task executable
         # Assign arguments for the task executable
         task1.arguments = ['--input_image', image.split('/')[-1],
                            '--model_architecture', self._model_arch,
@@ -144,9 +144,9 @@ class Seals(Executor):
                            split('.')[0]]
         task1.link_input_data = ['$SHARED/%s' % self._model_name]
         task1.cpu_reqs = {'processes': 1, 'threads_per_process': 1,
-                        'process_type': None, 'thread_type': 'OpenMP'}
+                          'process_type': None, 'thread_type': 'OpenMP'}
         task1.gpu_reqs = {'processes': 1, 'threads_per_process': 1,
-                        'process_type': None, 'thread_type': 'OpenMP'}
+                          'process_type': None, 'thread_type': 'OpenMP'}
         # Download resuting images
         task1.download_output_data = ['%s/ > %s' % (image.split('/')[-1].
                                                     split('.')[0],
@@ -169,7 +169,9 @@ class Seals(Executor):
                            os.path.abspath(self._model_path + self._model_name))
         discovery = Discovery(modules=self._req_modules,
                               paths=self._data_input_path,
-                              pre_execs= self._pre_execs + ['module list','echo $PYTHONPATH','which python3'])
+                              pre_execs= self._pre_execs + ['module list',
+                                                            'echo $PYTHONPATH',
+                                                            'which python3'])
         discovery_pipeline = discovery.generate_discover_pipeline()
 
         self._app_manager.workflow = set([discovery_pipeline])
@@ -181,12 +183,12 @@ class Seals(Executor):
         pre_execs = self._resolve_pre_execs()
         img_pipelines = list()
         for idx in range(0, len(images)):
-            img_pipeline = self._generate_pipeline(name='P%s' % idx,
-                                                   pre_execs=pre_execs,
-                                                   image=images['Filename'][idx],
-                                                   image_size=images['Size'][idx])
-            img_pipelines.append(img_pipeline)
-        
+            img_pipe = self._generate_pipeline(name='P%s' % idx,
+                                               pre_execs=pre_execs,
+                                               image=images['Filename'][idx],
+                                               image_size=images['Size'][idx])
+            img_pipelines.append(img_pipe)
+
         self._app_manager.workflow = set(img_pipelines)
 
         self._app_manager.run()

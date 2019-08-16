@@ -72,7 +72,7 @@ def test_generate_pipeline(mocked_init):
     for task in task_list:
         assert task.name == 'Disc-T0'
         assert task.pre_exec == ['unset PYTHONPATH']
-        assert task.executable == 'python'   # Assign executable to the task
+        assert task.executable == 'python3'   # Assign executable to the task
         assert task.arguments == ['image_disc.py', 'test',
                                   '--filename=images0',
                                   '--filetype=csv', '--filesize']
@@ -96,7 +96,7 @@ def test_generate_pipeline(mocked_init):
     for task in task_list:
         assert task.name == 'Disc-T0'
         assert task.pre_exec == ['unset PYTHONPATH', 'module load test_module']
-        assert task.executable == 'python'   # Assign executable to the task
+        assert task.executable == 'python3'   # Assign executable to the task
         assert task.arguments == ['image_disc.py', 'test',
                                   '--filename=images0',
                                   '--filetype=csv', '--filesize']
@@ -122,7 +122,7 @@ def test_generate_pipeline(mocked_init):
         assert task.pre_exec == ['unset PYTHONPATH',
                                  'module load test_module',
                                  'test_pre_exec']
-        assert task.executable == 'python'   # Assign executable to the task
+        assert task.executable == 'python3'   # Assign executable to the task
         assert task.arguments == ['image_disc.py', 'test',
                                   '--filename=images0',
                                   '--filetype=csv', '--filesize']

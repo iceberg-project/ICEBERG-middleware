@@ -63,15 +63,12 @@ class Discovery(object):
             for module in self._modules:
                 tmp_load = 'module load %s' % module
                 modules_load.append(tmp_load)
-        
+
         tmp_pre_execs = ['unset PYTHONPATH']
         if self._pre_execs:
-            tmp_pre_execs = tmp_pre_execs + \
-                            modules_load + \
-                            self._pre_execs
+            tmp_pre_execs = tmp_pre_execs + modules_load + self._pre_execs
         else:
-            tmp_pre_execs = tmp_pre_execs + \
-                            modules_load
+            tmp_pre_execs = tmp_pre_execs + modules_load
 
         for i in range(len(self._paths)):
             task = re.Task()
