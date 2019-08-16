@@ -112,7 +112,7 @@ class Seals(Executor):
         task0.executable = 'iceberg_seals.tiling'   # Assign executable to the task
         # Assign arguments for the task executable
         task0.arguments = ['--scale_bands=%s' % self._scale_bands,
-                           '--input_image=%s' % image,
+                           '--input_image=%s' % image.split('/')[-1],
                            # This line points to the local filesystem of the node
                            # that the tiling of the image happened.
                            '--output_folder=$NODE_LFS_PATH/%s' % task0.name]
@@ -169,7 +169,7 @@ class Seals(Executor):
                            os.path.abspath(self._model_path + self._model_name))
         discovery = Discovery(modules=self._req_modules,
                               paths=self._data_input_path,
-                              pre_execs= self._pre_execs + ['module list','echo $PYTHONPATH'])
+                              pre_execs= self._pre_execs + ['module list','echo $PYTHONPATH','which python3'])
         discovery_pipeline = discovery.generate_discover_pipeline()
 
         self._app_manager.workflow = set([discovery_pipeline])
@@ -180,7 +180,7 @@ class Seals(Executor):
 
         pre_execs = self._resolve_pre_execs()
         img_pipelines = list()
-        for idx in range(0, len(img_pipelines):
+        for idx in range(0, len(images)):
             img_pipeline = self._generate_pipeline(name='P%s' % idx,
                                                    pre_execs=pre_execs,
                                                    image=images['Filename'][idx],
