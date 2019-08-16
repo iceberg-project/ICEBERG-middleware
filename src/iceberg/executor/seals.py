@@ -166,6 +166,7 @@ class Seals(Executor):
         '''
         self._app_manager.shared_data = [os.path.abspath(self._model_path
                                                          + self._model_name)]
+        self._logger.debug('Uploaded model %s',
                            os.path.abspath(self._model_path + self._model_name))
         discovery = Discovery(modules=self._req_modules,
                               paths=self._data_input_path,
