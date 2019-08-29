@@ -6,7 +6,7 @@ Copyright: 2018-2019
 
 from __future__ import print_function
 import os
-import pandas as pd
+import csv
 import radical.entk as re
 
 from .executor import Executor
@@ -178,17 +178,19 @@ class Seals(Executor):
         self._app_manager.workflow = set([discovery_pipeline])
 
         self._app_manager.run()
-
-        images = pd.read_csv('images0.csv')
-
+        images_csv = open('images0.csv')
+        images = csv.reader(images_csv)
+        images.next()
         pre_execs = self._resolve_pre_execs()
         img_pipelines = list()
-        for idx in range(0, len(images)):
+        idx = 0
+        for [image,size] in images:
             img_pipe = self._generate_pipeline(name='P%s' % idx,
                                                pre_execs=pre_execs,
-                                               image=images['Filename'][idx],
-                                               image_size=images['Size'][idx])
+                                               image=image,
+                                               image_size=int(size))
             img_pipelines.append(img_pipe)
+            idx += 1
 
         self._app_manager.workflow = set(img_pipelines)
 
