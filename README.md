@@ -4,7 +4,7 @@ The `master` branch generally reflects the ICEBERG release on Pypi, and is
 considered stable: it should work 'out of the box'. Please refer to the documentation.
 
 The `devel` branch (and any other branches than master, for that matter)
-may not correspond to the publised documentation, and specifically may have
+may not correspond to the published documentation, and specifically may have
 dependencies which need to be resolved manually.  Please contact us with an issue
 if you need advice on the usage of any non-master branch.
 
@@ -29,6 +29,14 @@ pip install . --upgrade
 
 ## Usage
 
+Before using ICEBERG a connection to a MongoDB is needed. To setup a password 
+protected database through Docker, see [instructions here](https://hackernoon.com/securing-mongodb-on-your-server-1fc50bd1267b)
+Then export the following variable
+
+```bash
+export RADICAL_PILOT_DBURL=mongodb://usernane:password@mongodb_hostname:port/db_name
+```
+
 The ICEBERG command can be executed as follows:
 ```bash
 iceberg [-h] [--resource RESOURCE] [--queue QUEUE] [--cpus CPUS]
@@ -40,7 +48,7 @@ iceberg [-h] [--resource RESOURCE] [--queue QUEUE] [--cpus CPUS]
 ```
 
 The arguments shown are mandatory for the command to execute correctly. Executing with `-h` will
-provide the following responce:
+provide the following response:
 ```
 
 positional arguments:

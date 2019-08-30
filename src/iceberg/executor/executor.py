@@ -44,7 +44,7 @@ class Executor(object):
             self._res_dict['schema'] = 'gsissh'
 
         self._app_manager = re.AppManager(port=32773,
-                                          hostname='localhost',
+                                          hostname='149.165.157.203',
                                           name=name,
                                           autoterminate=False,
                                           write_workflow=False)
