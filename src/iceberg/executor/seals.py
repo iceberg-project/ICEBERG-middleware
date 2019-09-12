@@ -51,8 +51,8 @@ class Seals(Executor):
 
             self._req_modules = ['cuda', 'python3']
 
-            self._pre_execs = ['source $SCRATCH/iceberg_seals/bin/activate',
-                               'export PYTHONPATH=$SCRATCH/iceberg_seals/lib/'
+            self._pre_execs = ['source /pylon5/mc3bggp/paraskev/iceberg_seals/bin/activate',
+                               'export PYTHONPATH=/pylon5/mc3bggp/paraskev/iceberg_seals/lib/'
                                + 'python3.5/site-packages']
 
         self._logger.info('Seals initialized')
