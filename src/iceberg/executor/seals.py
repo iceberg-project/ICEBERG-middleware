@@ -51,9 +51,10 @@ class Seals(Executor):
 
             self._req_modules = ['cuda', 'python3']
 
-            self._pre_execs = ['source /pylon5/mc3bggp/paraskev/iceberg_seals/bin/activate',
-                               'export PYTHONPATH=/pylon5/mc3bggp/paraskev/iceberg_seals/lib/'
-                               + 'python3.5/site-packages']
+            self._pre_execs = ['source /pylon5/mc3bggp/paraskev/iceberg_seals/'
+                               + 'bin/activate',
+                               'export PYTHONPATH=/pylon5/mc3bggp/paraskev/'
+                               + 'iceberg_seals/lib/python3.5/site-packages']
 
         self._logger.info('Seals initialized')
     # pylint: disable=too-many-arguments
@@ -184,7 +185,7 @@ class Seals(Executor):
         pre_execs = self._resolve_pre_execs()
         img_pipelines = list()
         idx = 0
-        for [image,size] in images:
+        for [image, size] in images:
             img_pipe = self._generate_pipeline(name='P%s' % idx,
                                                pre_execs=pre_execs,
                                                image=image,
