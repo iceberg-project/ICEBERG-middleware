@@ -34,9 +34,9 @@ def image_discovery(path, filename='list', filetype='csv', filesize=False):
             filesize = int(math.ceil(os.path.getsize(filepath) / 1024 / 1024))
             writer.writerow((filepath, filesize))
     else:
-        writer.writerow(('Filename'))
+        writer.writerow(['Filename'])
         for filepath in filepaths:
-            writer.writerow((filepath, filesize))
+            writer.writerow([filepath])
 
     image_csv.close()
 
