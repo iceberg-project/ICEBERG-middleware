@@ -31,7 +31,7 @@ before_install:
   - pip install flake8
   - pip install pylint
   - pip install codecov
-  - pip isntall pandas
+  - pip install pandas
   - pip install .
 
    
