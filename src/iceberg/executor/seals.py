@@ -46,15 +46,15 @@ class Seals(Executor):
         self._hyperparam = hyperparameters
         self._req_modules = None
         self._pre_execs = None
-
+        self._env_var = os.environ.get('VE_SEALS')
         if self._res_dict['resource'] == 'xsede.bridges':
 
             self._req_modules = ['cuda', 'python3']
 
-            self._pre_execs = ['source /pylon5/mc3bggp/paraskev/iceberg_seals/'
-                               + 'bin/activate',
-                               'export PYTHONPATH=/pylon5/mc3bggp/paraskev/'
-                               + 'iceberg_seals/lib/python3.5/site-packages']
+            self._pre_execs = ['source %s' % self._env_var
+                               + '/bin/activate',
+                               'export PYTHONPATH=%s/' % self._env_var
+                               + 'lib/python3.5/site-packages']
 
         self._logger.info('Seals initialized')
     # pylint: disable=too-many-arguments
