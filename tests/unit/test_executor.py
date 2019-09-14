@@ -23,6 +23,14 @@ def test_init():
     radical.entk.AppManager = mock.Mock(name='test_appmanager')
     radical.entk.AppManager.resource_desc = {}
     radical.utils.Logger = mock.Mock(return_value='test_logger')
+    with pytest.raises(RuntimeError):
+        component = Executor('test', 'my_resource', 30, 5)
+
+    os.environ['RMQ_ENDPOINT'] = '149.165.157.203'
+    os.environ['RMQ_PORT'] = '32773'
+    radical.entk.AppManager = mock.Mock(name='test_appmanager')
+    radical.entk.AppManager.resource_desc = {}
+    radical.utils.Logger = mock.Mock(return_value='test_logger')
     component = Executor('test', 'my_resource', 30, 5)
     assert component._res_dict == {'resource': 'my_resource',
                                    'walltime': 30,

@@ -4,30 +4,41 @@ The `master` branch generally reflects the ICEBERG release on Pypi, and is
 considered stable: it should work 'out of the box'. Please refer to the documentation.
 
 The `devel` branch (and any other branches than master, for that matter)
-may not correspond to the publised documentation, and specifically may have
+may not correspond to the published documentation, and specifically may have
 dependencies which need to be resolved manually.  Please contact us with an issue
 if you need advice on the usage of any non-master branch.
 
 [![Devel Build Status](https://travis-ci.com/iceberg-project/ICEBERG-middleware.svg?branch=devel)](https://travis-ci.com/iceberg-project/ICEBERG-middleware) [![codecov](https://codecov.io/gh/iceberg-project/ICEBERG-middleware/branch/devel/graph/badge.svg)](https://codecov.io/gh/iceberg-project/ICEBERG-middleware)
 
 ## Installation:
+Create a Python Virtual Environment ([VirtualEnv](https://virtualenv.pypa.io/en/latest/) or
+[Conda](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html?))
+and activate it.
 
-To install our package you should clone the repo by running and checkout the `devel` branch:
+To install our package from source, you should clone the repo and execute pip install from its root folder:
 ```bash
 git clone https://github.com/ICEBERG-project/ICEBERG-middleware.git
-git checkout devel
-```
-
-Then create a Python Virtual Environment ([VirtualEnv](https://virtualenv.pypa.io/en/latest/) or
-[Conda](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html?))
-and move in the ICEBERG-middleware folder.
-
-To install run:
-```bash
+cd ICEBERG-middeware
 pip install . --upgrade
 ```
 
+To install from PyPi
+```bash
+pip install iceberg
+```
+
 ## Usage
+
+Before using ICEBERG a connection to a MongoDB, and a RabbitMQ are needed. To setup a password 
+protected database through Docker, see [instructions here](https://hackernoon.com/securing-mongodb-on-your-server-1fc50bd1267b). To setup RabbitMQ with docker see these [instructions](https://hub.docker.com/_/rabbitmq/)
+Then export the following variable
+
+```bash
+export RADICAL_PILOT_DBURL=mongodb://usernane:password@mongodb_hostname:port/db_name
+export RMQ_ENDPOINT=ip_value
+export RMQ_PORT=port_number
+export VE_SEALS=ve_path/ve_name
+```
 
 The ICEBERG command can be executed as follows:
 ```bash
@@ -40,7 +51,7 @@ iceberg [-h] [--resource RESOURCE] [--queue QUEUE] [--cpus CPUS]
 ```
 
 The arguments shown are mandatory for the command to execute correctly. Executing with `-h` will
-provide the following responce:
+provide the following response:
 ```
 
 positional arguments:

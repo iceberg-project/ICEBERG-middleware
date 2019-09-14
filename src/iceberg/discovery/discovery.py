@@ -64,16 +64,17 @@ class Discovery(object):
                 tmp_load = 'module load %s' % module
                 modules_load.append(tmp_load)
 
+        tmp_pre_execs = ['unset PYTHONPATH']
         if self._pre_execs:
-            tmp_pre_execs = modules_load + self._pre_execs
+            tmp_pre_execs = tmp_pre_execs + modules_load + self._pre_execs
         else:
-            tmp_pre_execs = modules_load
+            tmp_pre_execs = tmp_pre_execs + modules_load
 
         for i in range(len(self._paths)):
             task = re.Task()
             task.name = 'Disc-T%d' % i
             task.pre_exec = tmp_pre_execs
-            task.executable = 'python'   # Assign executable to the task
+            task.executable = 'python3'   # Assign executable to the task
             task.arguments = ['image_disc.py', '%s' % self._paths[i],
                               '--filename=images%d' % i,
                               '--filetype=%s' % filetype, '--filesize']

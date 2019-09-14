@@ -79,6 +79,8 @@ class IcebergParser(object):
                                       help='The size of the scale bands')
             seals_parser.add_argument('--model_path', '-mp',
                                       help='Path of a custom model')
+            seals_parser.add_argument('--model_arch', '-ma',
+                                      help='Model Architecture')
             seals_parser.add_argument('--hyperparameters', '-hy',
                                       help='Hyperparameter Set')
 

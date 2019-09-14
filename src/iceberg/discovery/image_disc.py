@@ -11,7 +11,7 @@ from glob import glob
 import argparse
 import os
 import math
-import pandas as pd
+import csv
 
 
 def image_discovery(path, filename='list', filetype='csv', filesize=False):
@@ -26,17 +26,19 @@ def image_discovery(path, filename='list', filetype='csv', filesize=False):
     """
 
     filepaths = glob(path + '/*.tif')
+    image_csv = open(filename + '.' + filetype, 'wt')
+    writer = csv.writer(image_csv)
     if filesize:
-        dataset_df = pd.DataFrame(columns=['Filename', 'Size'])
+        writer.writerow(('Filename', 'Size'))
         for filepath in filepaths:
             filesize = int(math.ceil(os.path.getsize(filepath) / 1024 / 1024))
-            dataset_df.loc[len(dataset_df)] = [filepath, filesize]
+            writer.writerow((filepath, filesize))
     else:
-        dataset_df = pd.DataFrame(columns=['Filename'])
+        writer.writerow(['Filename'])
         for filepath in filepaths:
-            dataset_df.loc[len(dataset_df)] = [filepath]
+            writer.writerow([filepath])
 
-    dataset_df.to_csv(filename + '.' + filetype, index=False)
+    image_csv.close()
 
 
 if __name__ == '__main__':

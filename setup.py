@@ -189,8 +189,7 @@ setup_args = {
 
     'package_data'      :  {'': ['VERSION', 'SDIST', sdist_name]},
 
-    'install_requires'  :  ['pandas',
-                            'radical.utils',
+    'install_requires'  :  ['radical.utils',
                             'radical.entk'],
 
     'zip_safe'          : False,
