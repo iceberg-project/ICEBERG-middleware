@@ -35,6 +35,9 @@ Then export the following variable
 
 ```bash
 export RADICAL_PILOT_DBURL=mongodb://usernane:password@mongodb_hostname:port/db_name
+export RMQ_ENDPOINT=ip_value
+export RMQ_PORT=port_number
+export VE_SEALS=ve_path/ve_name
 ```
 
 The ICEBERG command can be executed as follows:
