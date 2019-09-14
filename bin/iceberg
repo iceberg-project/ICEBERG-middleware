@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+"""
+Author: Ioannis Paraskevakos
+License: MIT
+Copyright: 2018-2019
+"""
+
+import argparse
+import radical.utils as ru
+from iceberg.iceberg_parser import IcebergParser
+from iceberg.executor import Seals
+
+if __name__ == "__main__":
+
+    parsed_values = IcebergParser().args()
+    print parsed_values
+    if parsed_values['analysis']['which'] == 'seals':
+        exec_obj = Seals(name=ru.generate_id('seals.%(item_counter)04d',
+                         mode=ru.ID_CUSTOM, namespace='seals'),
+                         resources={
+                            'resource': parsed_values['general']['resource'],
+                            'queue': parsed_values['general']['queue'],
+                            'walltime': parsed_values['general']['waltime'],
+                            'cpus': parsed_values['general']['cpus'],
+                            'gpus': parsed_values['general']['gpus']
+                            },
+                         project=parsed_values['general']['project'],
+                         input_path=parsed_values['general']['input_path'],
+                         output_path=parsed_values['general']['output_path'],
+                         scale_bands=parsed_values['analysis']['scale_bands'],
+                         model=parsed_values['analysis']['model'],
+                         model_path=parsed_values['analysis']['model_path'],
+                         model_arch=parsed_values['analysis']['model_arch'],
+                         hyperparameters=parsed_values['analysis']['hyperparameters'])
+    else:
+        raise RuntimeError('Analysis %s not supported yet' %
+                           parsed_values['analysis']['which'])
+
+    exec_obj.run()
