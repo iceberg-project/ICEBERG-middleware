@@ -29,9 +29,8 @@ pip install iceberg
 
 ## Usage
 
-Before using ICEBERG a connection to a MongoDB, and a RabbitMQ are needed. To setup a password 
-protected database through Docker, see [instructions here](https://hackernoon.com/securing-mongodb-on-your-server-1fc50bd1267b). To setup RabbitMQ with docker see these [instructions](https://hub.docker.com/_/rabbitmq/)
-Then export the following variable
+Before using ICEBERG connections to a MongoDB server and one to a RabbitMQ server are needed. To setup a password-protected database with Docker, see these [instructions here](https://hackernoon.com/securing-mongodb-on-your-server-1fc50bd1267b). To setup RabbitMQ with Docker see these [instructions](https://hub.docker.com/_/rabbitmq/). Once the two servers are available,
+export the following variables with appropriate values:
 
 ```bash
 export RADICAL_PILOT_DBURL=mongodb://usernane:password@mongodb_hostname:port/db_name
@@ -51,7 +50,7 @@ iceberg [-h] [--resource RESOURCE] [--queue QUEUE] [--cpus CPUS]
 ```
 
 The arguments shown are mandatory for the command to execute correctly. Executing with `-h` will
-provide the following response:
+print the command help page:
 ```
 
 positional arguments:
@@ -75,7 +74,7 @@ Required Arguments:
                         The estimated execution time
 ```
 
-The expected analysis commands are:
+Currently, the available analysis commands are:
 1. seals
 2. penguins
 3. 4DGeolocation
