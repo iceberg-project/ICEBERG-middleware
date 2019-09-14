@@ -11,26 +11,26 @@ if you need advice on the usage of any non-master branch.
 [![Devel Build Status](https://travis-ci.com/iceberg-project/ICEBERG-middleware.svg?branch=devel)](https://travis-ci.com/iceberg-project/ICEBERG-middleware) [![codecov](https://codecov.io/gh/iceberg-project/ICEBERG-middleware/branch/devel/graph/badge.svg)](https://codecov.io/gh/iceberg-project/ICEBERG-middleware)
 
 ## Installation:
+Create a Python Virtual Environment ([VirtualEnv](https://virtualenv.pypa.io/en/latest/) or
+[Conda](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html?))
+and activate it.
 
-To install our package you should clone the repo by running and checkout the `devel` branch:
+To install our package from source, you should clone the repo and execute pip install from its root folder:
 ```bash
 git clone https://github.com/ICEBERG-project/ICEBERG-middleware.git
-git checkout devel
+cd ICEBERG-middeware
+pip install . --upgrade
 ```
 
-Then create a Python Virtual Environment ([VirtualEnv](https://virtualenv.pypa.io/en/latest/) or
-[Conda](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html?))
-and move in the ICEBERG-middleware folder.
-
-To install run:
+To install from PyPi
 ```bash
-pip install . --upgrade
+pip install iceberg
 ```
 
 ## Usage
 
-Before using ICEBERG a connection to a MongoDB is needed. To setup a password 
-protected database through Docker, see [instructions here](https://hackernoon.com/securing-mongodb-on-your-server-1fc50bd1267b)
+Before using ICEBERG a connection to a MongoDB, and a RabbitMQ are needed. To setup a password 
+protected database through Docker, see [instructions here](https://hackernoon.com/securing-mongodb-on-your-server-1fc50bd1267b). To setup RabbitMQ with docker see these [instructions](https://hub.docker.com/_/rabbitmq/)
 Then export the following variable
 
 ```bash
