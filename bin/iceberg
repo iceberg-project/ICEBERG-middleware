@@ -13,10 +13,30 @@ from iceberg.executor import Seals
 if __name__ == "__main__":
 
     parsed_values = IcebergParser().args()
-    print parsed_values
+    import os
+
+    if ['rmq_endpoint'] in parsed_values:
+        os.environ['RMQ_ENDPOINT'] = parsed_values['rmq_endpoint']
+    elif 'RMQ_ENDPOINT' not in os.environ:
+        raise RuntimeError('RMQ_ENDPOINT is not setup.')
+    
+    if ['rmq_port'] in parsed_values:
+        os.environ['RMQ_PORT'] = parsed_values['rmq_port']
+    elif 'RMQ_PORT' not in os.environ:
+        raise RuntimeError('RMQ_PORT is not setup.')
+    
+    if ['radical_pilot_dburl'] in parsed_values:
+        os.environ['RADICAL_PILOT_DBURL'] = parsed_values['radical_pilot_dburl']
+    elif 'RADICAL_PILOT_DBURL' not in os.environ:
+        raise RuntimeError('RADICAL_PILOT_DBURL is not setup.')
+    
     if parsed_values['analysis']['which'] == 'seals':
+        if ['ve_seals'] in parsed_values:
+            os.environ['VE_SEALS'] = parsed_values['ve_seal']
+        elif 'VE_SEALS' not in os.environ:
+            raise RuntimeError('VE_SEALS is not setup.')
         exec_obj = Seals(name=ru.generate_id('seals.%(item_counter)04d',
-                         mode=ru.ID_PRIVATE, namespace='seals'),
+                         mode=ru.ID_CUSTOM, namespace='seals'),
                          resources={
                             'resource': parsed_values['general']['resource'],
                             'queue': parsed_values['general']['queue'],
