@@ -36,7 +36,7 @@ if __name__ == "__main__":
     
     
     elif parsed_values['analysis']['which'] == 'penguins':
-        exec_obj = Penguins(name=ru.generate_id('penguins.%(item_counter)04d',
+        exec_obj = Penguins(name=ru.generate_id('penguins.%(item_counter)07d',
                          mode=ru.ID_PRIVATE, namespace='penguins'),
                          resources={
                             'resource': parsed_values['general']['resource'],
