@@ -9,6 +9,7 @@ import argparse
 import radical.utils as ru
 from iceberg.iceberg_parser import IcebergParser
 from iceberg.executor import Seals
+from iceberg.executor import Penguins
 
 if __name__ == "__main__":
 
