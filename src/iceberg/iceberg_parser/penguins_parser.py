@@ -13,14 +13,15 @@ class PenguinsSubparser(object):
             penguins_parser = parser.add_parser('penguins')            
             penguins_parser.description = 'These are the options for Penguins \
                                            type analysis.'
-            penguins_parser.set_defaults(which='penguins')
-            penguins_parser.add_argument('--scale_bands', '-s',
-                                         help='The size of the scale bands')
+            penguins_parser.set_defaults(which='penguins'),
+            penguins_parser.add_argument('--gpu_ids', '-gid',
+                                         help='The GPU id 0 or 1'),
+            penguins_parser.add_argument('--epoch', 'ep',
+                                         help='The number of epoches default is \
+                                         set to 300'),
             penguins_parser.add_argument('--model', '-m',
-                                         help='The size of the scale bands')
+                                         help='The model name'),
             penguins_parser.add_argument('--model_path', '-mp',
                                          help='Path of a custom model')
-            penguins_parser.add_argument('--hyperparameters', '-hy',
-                                         help='Hyperparameter Set')
-            penguins_parser.add_argument('--shadow_mask', '-sm')
+
 

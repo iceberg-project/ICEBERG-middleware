@@ -19,15 +19,14 @@ class Penguins(Executor):
     :Additional Parameters:
     :input_path: The path to the input images
         :ouptut_path: Path to the output images
-        :scale_bands: The size of the scale bands
-        :model: The model
+        :model: The model name 
         :model_path: Path of a custom model
-        :hyperparameters: Hyperparameter Set
+        :epoch: number of epochs (300) 
     '''
     # pylint: disable=too-many-arguments
     def __init__(self, name, resources, project=None, input_path=None,
-                 output_path=None, scale_bands=None, model=None,
-                 model_path=None, model_arch=None, hyperparameters=None):
+                 output_path=None, gpu_ids=None, model=None,
+                 model_path=None, epoch=None):
 
         super(Penguins, self).__init__(name=name,
                                     resource=resources['resource'],
@@ -36,24 +35,23 @@ class Penguins(Executor):
                                     cpus=resources['cpus'],
                                     gpus=resources['gpus'],
                                     project=project)
+        self._gpu_ids = gpu_ids
         self._data_input_path = input_path
         self._output_path = output_path
-        self._scale_bands = scale_bands
         self._model_name = model
         self._model_path = model_path
-        self._model_arch = model_arch
-        self._hyperparam = hyperparameters
+        self._epoch = epoch
         self._req_modules = None
         self._pre_execs = None
         self._env_var = os.environ.get('VE_PENGUINS')
         if self._res_dict['resource'] == 'xsede.bridges':
 
-            self._req_modules = ['cuda', 'python3']
+            self._req_modules = ['cuda', 'python2']
 
             self._pre_execs = ['source %s' % self._env_var
                                + '/bin/activate',
                                'export PYTHONPATH=%s/' % self._env_var
-                               + 'lib/python3.5/site-packages']
+                               + 'lib/python2.7/site-packages']
 
         self._logger.info('Penguins initialized')
     
@@ -85,7 +83,7 @@ class Penguins(Executor):
 
         return tmp_pre_execs
 
-    def _generate_pipeline(self, name, pre_execs, image, image_size):
+    def _generate_pipeline(self, name, pre_execs, image):
 
         '''
         This function creates a pipeline for an image that will be analyzed.
@@ -93,8 +91,6 @@ class Penguins(Executor):
         :Arguments:
             :name: Pipeline name, str
             :image: image path, str
-            :image_size: image size in MBs, int
-            :tile_size: The size of each tile, int
             :model_path: Path to the model file, str
             :model_arch: Prediction Model Architecture, str
             :model_name: Prediction Model Name, str
@@ -112,14 +108,14 @@ class Penguins(Executor):
         task1.pre_exec = pre_execs
         task1.executable = 'iceberg_penguins.predicting'  # Assign task executable
         # Assign arguments for the task executable
-        task1.arguments = ['--input_image', image.split('/')[-1],
-                           '--model_architecture', self._model_arch,
-                           '--hyperparameter_set', self._hyperparam,
-                           '--training_set', 'test_vanilla',
-                           '--test_folder', '$NODE_LFS_PATH/%s' % task0.name,
-                           '--model_path', './',
-                           '--output_folder', './%s' % image.split('/')[-1].
-                           split('.')[0]]
+        task1.arguments = ['--gpu_ids', self._gpu_ids,
+                           '--name', self._model_name,
+                           '--epoch', self._epoch,
+                           '--checkpoints_dir', self._model_path,
+                           '--output', self._output_path,
+                           '--testset', 'GE',
+                           '--input_im', image.split('/')[-1],
+        ]
         task1.link_input_data = ['$SHARED/%s' % self._model_name]
         task1.cpu_reqs = {'processes': 1, 'threads_per_process': 1,
                           'process_type': None, 'thread_type': 'OpenMP'}
@@ -149,7 +145,7 @@ class Penguins(Executor):
                               paths=self._data_input_path,
                               pre_execs=self._pre_execs + ['module list',
                                                            'echo $PYTHONPATH',
-                                                           'which python3'])
+                                                           'which python2'])
         discovery_pipeline = discovery.generate_discover_pipeline()
 
         self._app_manager.workflow = set([discovery_pipeline])
@@ -161,11 +157,10 @@ class Penguins(Executor):
         pre_execs = self._resolve_pre_execs()
         img_pipelines = list()
         idx = 0
-        for [image, size] in images:
+        for [image] in images:
             img_pipe = self._generate_pipeline(name='P%s' % idx,
                                                pre_execs=pre_execs,
-                                               image=image,
-                                               image_size=int(size))
+                                               image=image)
             img_pipelines.append(img_pipe)
             idx += 1
 
