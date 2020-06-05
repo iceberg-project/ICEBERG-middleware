@@ -46,11 +46,13 @@ class Executor(object):
 
         rmq_endpoint = os.environ.get('RMQ_ENDPOINT', None)
         rmq_port = os.environ.get('RMQ_PORT', None)
+        rmq_passwd = os.environ.get('RMQ_PASSWD', None)
         if ((rmq_endpoint is None) or (rmq_port is None)):
             raise RuntimeError('Rabbit MQ endpoint and/or port is not set')
 
         self._app_manager = re.AppManager(port=int(rmq_port),
                                           hostname=rmq_endpoint,
+                                          password=rmq_passwd,
                                           name=name,
                                           autoterminate=False,
                                           write_workflow=False)
