@@ -71,9 +71,22 @@ class IcebergParser(object):
             required_args.add_argument('--project', '-pr',
                                        help='The project ID to charge',
                                        type=str, default=None)
+            required_args.add_argument('--rmq_endpoint',
+                                       help='RMQ endpoint for EnTK. \
+                                             This is a url.',
+                                       type=str, default=None)
+            required_args.add_argument('--rmq_port',
+                                       help='RMQ port. This is the port \
+                                       number RMQ listens to.',
+                                       type=str, default=None)
+            required_args.add_argument('--radical_pilot_dburl', '-rpdb',
+                                       help='RD MongoDB URL. \
+                                       This URL has the following form: \
+                                       mongodb://<uname>:<password>@ip:port/db_name',
+                                       type=str, default=None)
 
             command_parser = parser.add_subparsers(help='commands')
-            
+
             for key, parser_impl in PARSERS.iteritems():
                 parser_impl(command_parser)
 
