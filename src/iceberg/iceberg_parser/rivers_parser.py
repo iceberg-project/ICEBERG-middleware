@@ -4,8 +4,6 @@ License: MIT
 Copyright: 2018-2019
 """
 
-from __future__ import print_function
-
 
 class RiversSubparser(object):
 

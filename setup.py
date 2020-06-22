@@ -126,9 +126,9 @@ def get_version(mod_root):
 
 
 # ------------------------------------------------------------------------------
-# check python version. we need >= 2.7, <3.x
-if  sys.hexversion < 0x02070000 or sys.hexversion >= 0x03000000:
-    raise RuntimeError("%s requires Python 2.x (2.7 or higher)" % name)
+# check python version. we need >= 3.6
+if  sys.hexversion < 0x03060000:
+    raise RuntimeError("%s requires Python 3.x (3.6 or higher)" % name)
 
 
 # ------------------------------------------------------------------------------
@@ -173,8 +173,8 @@ setup_args = {
         'Intended Audience :: Developers',
         'Environment :: Console',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Utilities',
         'Topic :: System :: Distributed Computing',
         'Topic :: Scientific/Engineering',

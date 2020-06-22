@@ -1,11 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Author: Ioannis Paraskevakos
 License: MIT
 Copyright: 2018-2019
 """
 
-import argparse
 import radical.utils as ru
 from iceberg.iceberg_parser import IcebergParser
 from iceberg.executor import Seals
@@ -14,6 +13,16 @@ if __name__ == "__main__":
 
     parsed_values = IcebergParser().args()
     import os
+
+    if ['rmq_username'] in parsed_values:
+        os.environ['RMQ_USENAME'] = parsed_values['rmq_username']
+    elif 'RMQ_USENAME' not in os.environ:
+        raise RuntimeError('RMQ_USENAME is not setup.')
+    
+    if ['rmq_password'] in parsed_values:
+        os.environ['RMQ_PASSWORD'] = parsed_values['rmq_password']
+    elif 'RMQ_PASSWORD' not in os.environ:
+        raise RuntimeError('RMQ_PASSWORD is not setup.')
 
     if ['rmq_endpoint'] in parsed_values:
         os.environ['RMQ_ENDPOINT'] = parsed_values['rmq_endpoint']

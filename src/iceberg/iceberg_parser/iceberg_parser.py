@@ -4,7 +4,6 @@ License: MIT
 Copyright: 2018-2019
 """
 
-from __future__ import print_function
 import argparse
 import sys
 import json
@@ -70,6 +69,14 @@ class IcebergParser(object):
                                        type=int, required=True)
             required_args.add_argument('--project', '-pr',
                                        help='The project ID to charge',
+                                       type=str, default=None)
+            required_args.add_argument('--rmq_username',
+                                       help='RMQ user name for EnTK. \
+                                             This is RabbitMQ username.',
+                                       type=str, default=None)
+            required_args.add_argument('--rmq_password',
+                                       help='RMQ password. This is the password \
+                                       for RMQ.',
                                        type=str, default=None)
             required_args.add_argument('--rmq_endpoint',
                                        help='RMQ endpoint for EnTK. \
