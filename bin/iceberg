@@ -14,33 +14,33 @@ if __name__ == "__main__":
     parsed_values = IcebergParser().args()
     import os
 
-    if ['rmq_username'] in parsed_values:
-        os.environ['RMQ_USENAME'] = parsed_values['rmq_username']
-    elif 'RMQ_USENAME' not in os.environ:
-        raise RuntimeError('RMQ_USENAME is not setup.')
+    if 'rmq_username' in parsed_values:
+        os.environ['RMQ_USERNAME'] = parsed_values['rmq_username']
+    elif 'RMQ_USERNAME' not in os.environ:
+        raise RuntimeError('RMQ_USERNAME is not setup.')
     
-    if ['rmq_password'] in parsed_values:
+    if 'rmq_password' in parsed_values:
         os.environ['RMQ_PASSWORD'] = parsed_values['rmq_password']
     elif 'RMQ_PASSWORD' not in os.environ:
         raise RuntimeError('RMQ_PASSWORD is not setup.')
 
-    if ['rmq_endpoint'] in parsed_values:
+    if 'rmq_endpoint' in parsed_values:
         os.environ['RMQ_ENDPOINT'] = parsed_values['rmq_endpoint']
     elif 'RMQ_ENDPOINT' not in os.environ:
         raise RuntimeError('RMQ_ENDPOINT is not setup.')
     
-    if ['rmq_port'] in parsed_values:
+    if 'rmq_port' in parsed_values:
         os.environ['RMQ_PORT'] = parsed_values['rmq_port']
     elif 'RMQ_PORT' not in os.environ:
         raise RuntimeError('RMQ_PORT is not setup.')
     
-    if ['radical_pilot_dburl'] in parsed_values:
+    if 'radical_pilot_dburl' in parsed_values:
         os.environ['RADICAL_PILOT_DBURL'] = parsed_values['radical_pilot_dburl']
     elif 'RADICAL_PILOT_DBURL' not in os.environ:
         raise RuntimeError('RADICAL_PILOT_DBURL is not setup.')
     
     if parsed_values['analysis']['which'] == 'seals':
-        if ['ve_seals'] in parsed_values:
+        if 've_seals' in parsed_values:
             os.environ['VE_SEALS'] = parsed_values['ve_seal']
         elif 'VE_SEALS' not in os.environ:
             raise RuntimeError('VE_SEALS is not setup.')
