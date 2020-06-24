@@ -94,7 +94,7 @@ class IcebergParser(object):
 
             command_parser = parser.add_subparsers(help='commands')
 
-            for key, parser_impl in PARSERS.iteritems():
+            for key, parser_impl in PARSERS.items():
                 parser_impl(command_parser)
 
             tmp_args = parser.parse_args()
@@ -114,7 +114,7 @@ class IcebergParser(object):
 
             self._args['analysis'] = dict()
             self._args['analysis']['which'] = tmp_args.pop('which')
-            for key, value in tmp_args.iteritems():
+            for key, value in tmp_args.items():
                 self._args['analysis'][key] = value
 
     # --------------------------------------------------------------------------
