@@ -45,7 +45,7 @@ if __name__ == "__main__":
         elif 'VE_SEALS' not in os.environ:
             raise RuntimeError('VE_SEALS is not setup.')
         exec_obj = Seals(name=ru.generate_id('seals.%(counter)04d',
-                         mode=ru.ID_CUSTOM, namespace='seals'),
+                         mode=ru.ID_CUSTOM, ns='seals'),
                          resources={
                             'resource': parsed_values['general']['resource'],
                             'queue': parsed_values['general']['queue'],
