@@ -189,7 +189,7 @@ setup_args = {
 
     'package_data'      :  {'': ['VERSION', 'SDIST', sdist_name]},
 
-    'install_requires'  :  ['radical.entk==0.7'],
+    'install_requires'  :  ['radical.entk'],
 
     'zip_safe'          : False,
     'scripts'           : ['bin/iceberg'
