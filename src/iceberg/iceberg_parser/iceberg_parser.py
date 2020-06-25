@@ -111,6 +111,11 @@ class IcebergParser(object):
             self._args['general']['waltime'] = tmp_args.pop('walltime')
             self._args['general']['input_path'] = tmp_args.pop('input_path')
             self._args['general']['output_path'] = tmp_args.pop('output_path')
+            self._args['general']['rmq_username'] = tmp_args.pop('rmq_username')
+            self._args['general']['rmq_password'] = tmp_args.pop('rmq_password')
+            self._args['general']['rmq_endpoint'] = tmp_args.pop('rmq_endpoint')
+            self._args['general']['rmq_port'] = tmp_args.pop('rmq_port')
+            self._args['general']['radical_pilot_dburl'] = tmp_args.pop('radical_pilot_dburl')
 
             self._args['analysis'] = dict()
             self._args['analysis']['which'] = tmp_args.pop('which')
