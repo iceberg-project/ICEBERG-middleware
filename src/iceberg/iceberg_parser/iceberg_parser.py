@@ -4,7 +4,6 @@ License: MIT
 Copyright: 2018-2019
 """
 
-from __future__ import print_function
 import argparse
 import sys
 import json
@@ -71,10 +70,31 @@ class IcebergParser(object):
             required_args.add_argument('--project', '-pr',
                                        help='The project ID to charge',
                                        type=str, default=None)
+            required_args.add_argument('--rmq_username',
+                                       help='RMQ user name for EnTK. \
+                                             This is RabbitMQ username.',
+                                       type=str, default=None)
+            required_args.add_argument('--rmq_password',
+                                       help='RMQ password. This is the password \
+                                       for RMQ.',
+                                       type=str, default=None)
+            required_args.add_argument('--rmq_endpoint',
+                                       help='RMQ endpoint for EnTK. \
+                                             This is a url.',
+                                       type=str, default=None)
+            required_args.add_argument('--rmq_port',
+                                       help='RMQ port. This is the port \
+                                       number RMQ listens to.',
+                                       type=str, default=None)
+            required_args.add_argument('--radical_pilot_dburl', '-rpdb',
+                                       help='RD MongoDB URL. \
+                                       This URL has the following form: \
+                                       mongodb://<uname>:<password>@ip:port/db_name',
+                                       type=str, default=None)
 
             command_parser = parser.add_subparsers(help='commands')
-            
-            for key, parser_impl in PARSERS.iteritems():
+
+            for key, parser_impl in PARSERS.items():
                 parser_impl(command_parser)
 
             tmp_args = parser.parse_args()
@@ -91,10 +111,15 @@ class IcebergParser(object):
             self._args['general']['waltime'] = tmp_args.pop('walltime')
             self._args['general']['input_path'] = tmp_args.pop('input_path')
             self._args['general']['output_path'] = tmp_args.pop('output_path')
+            self._args['general']['rmq_username'] = tmp_args.pop('rmq_username')
+            self._args['general']['rmq_password'] = tmp_args.pop('rmq_password')
+            self._args['general']['rmq_endpoint'] = tmp_args.pop('rmq_endpoint')
+            self._args['general']['rmq_port'] = tmp_args.pop('rmq_port')
+            self._args['general']['radical_pilot_dburl'] = tmp_args.pop('radical_pilot_dburl')
 
             self._args['analysis'] = dict()
             self._args['analysis']['which'] = tmp_args.pop('which')
-            for key, value in tmp_args.iteritems():
+            for key, value in tmp_args.items():
                 self._args['analysis'][key] = value
 
     # --------------------------------------------------------------------------

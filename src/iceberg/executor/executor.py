@@ -4,7 +4,6 @@ License: MIT
 Copyright: 2018-2019
 """
 
-from __future__ import print_function
 import os
 
 import radical.entk as re
@@ -47,7 +46,7 @@ class Executor(object):
         rmq_endpoint = os.environ.get('RMQ_ENDPOINT', None)
         rmq_port = os.environ.get('RMQ_PORT', None)
         rmq_username = os.environ.get('RMQ_USERNAME', None)
-        rmq_passwd = os.environ.get('RMQ_PASSWD', None)
+        rmq_passwd = os.environ.get('RMQ_PASSWORD', None)
         if ((rmq_endpoint is None) or (rmq_port is None)):
             raise RuntimeError('Rabbit MQ endpoint and/or port is not set')
 

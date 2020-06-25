@@ -4,7 +4,6 @@ License: MIT
 Copyright: 2018-2019
 """
 
-from __future__ import print_function
 import os
 import csv
 import radical.entk as re

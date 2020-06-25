@@ -4,9 +4,6 @@ License: MIT
 Copyright: 2018-2019
 """
 
-from __future__ import print_function
-
-
 class SealsSubparser(object):
 
     def __init__(self,parser):
@@ -24,4 +21,7 @@ class SealsSubparser(object):
                                       help='Model Architecture')
             seals_parser.add_argument('--hyperparameters', '-hy',
                                       help='Hyperparameter Set')
+            seals_parser.add_argument('--ve_seals',
+                                      help='Path of a python virtualenv with \
+                                      the seals package installed ')
 
