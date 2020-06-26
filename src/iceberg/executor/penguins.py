@@ -116,7 +116,7 @@ class Penguins(Executor):
                            '--testset', 'GE',
                            '--input_im', image.split('/')[-1],
         ]
-        task1.link_input_data = ['$SHARED/%s' % self._model_name]
+        task1.link_input_data = ['%s' % (self._model_path + self._model_name)]
         task1.cpu_reqs = {'processes': 1, 'threads_per_process': 1,
                           'process_type': None, 'thread_type': 'OpenMP'}
         task1.gpu_reqs = {'processes': 1, 'threads_per_process': 1,
@@ -125,7 +125,7 @@ class Penguins(Executor):
         task1.download_output_data = ['%s/ > %s' % (image.split('/')[-1].
                                                     split('.')[0],
                                                     image.split('/')[-1])]
-        task1.tag = task0.name
+        #task1.tag = task0.name
 
         stage0.add_tasks(task1)
         # Add Stage to the Pipeline
@@ -137,10 +137,11 @@ class Penguins(Executor):
         '''
         Private method that creates and executes the workflow of the use case.
         '''
-        self._app_manager.shared_data = [os.path.abspath(self._model_path
-                                                         + self._model_name)]
-        self._logger.debug('Uploaded model %s',
-                           os.path.abspath(self._model_path + self._model_name))
+        #print(os.path.abspath(self._model_path + self._model_name))
+        #self._app_manager.shared_data = [os.path.abspath(self._model_path
+        #                                                 + self._model_name)]
+        #self._logger.debug('Uploaded model %s',
+        #                   os.path.abspath(self._model_path + self._model_name))
         discovery = Discovery(modules=self._req_modules,
                               paths=self._data_input_path,
                               pre_execs=self._pre_execs + ['module list',
@@ -153,7 +154,7 @@ class Penguins(Executor):
         self._app_manager.run()
         images_csv = open('images0.csv')
         images = csv.reader(images_csv)
-        images.next()
+        _= next(images)
         pre_execs = self._resolve_pre_execs()
         img_pipelines = list()
         idx = 0
