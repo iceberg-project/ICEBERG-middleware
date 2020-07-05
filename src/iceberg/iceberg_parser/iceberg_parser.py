@@ -110,7 +110,7 @@ class IcebergParser():
                     'resource',
                     'project',
                     'queue',
-                    'waltime',
+                    'walltime',
                     'input_path',
                     'output_path',
                     'rmq_username',

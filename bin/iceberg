@@ -48,7 +48,7 @@ if __name__ == "__main__":
                          resources={
                             'resource': parsed_values['general']['resource'],
                             'queue': parsed_values['general']['queue'],
-                            'walltime': parsed_values['general']['waltime'],
+                            'walltime': parsed_values['general']['walltime'],
                             'cpus': parsed_values['general']['cpus'],
                             'gpus': parsed_values['general']['gpus']
                             },
