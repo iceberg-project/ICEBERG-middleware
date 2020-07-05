@@ -10,7 +10,7 @@ import radical.entk as re
 import radical.utils as ru
 
 
-class Executor(object):
+class Executor():
     '''
     :Class Executor:
     This base class is for executing workflows.
@@ -76,8 +76,6 @@ class Executor(object):
         '''
         Private method that creates and executes the workflow of the use case.
         '''
-
-        pass
 
     def _terminate(self):
         '''
