@@ -63,7 +63,7 @@ def test_generate_pipeline(mocked_init):
     component._paths = ['test']
     component._pre_execs = None
 
-    test_pipeline = component.generate_discover_pipeline()
+    test_pipeline = component.generate_discover_pipe()
     assert test_pipeline.name == 'Disc'
     assert len(test_pipeline.stages) == 1
     assert test_pipeline.stages[0].name == 'Disc-S0'
@@ -88,7 +88,7 @@ def test_generate_pipeline(mocked_init):
     component._paths = ['test']
     component._pre_execs = None
 
-    test_pipeline = component.generate_discover_pipeline()
+    test_pipeline = component.generate_discover_pipe()
     assert test_pipeline.name == 'Disc'
     assert len(test_pipeline.stages) == 1
     assert test_pipeline.stages[0].name == 'Disc-S0'
@@ -113,7 +113,7 @@ def test_generate_pipeline(mocked_init):
     component._paths = ['test']
     component._pre_execs = ['test_pre_exec']
 
-    test_pipeline = component.generate_discover_pipeline(images_ftype='png')
+    test_pipeline = component.generate_discover_pipe(img_ftype='png')
     assert test_pipeline.name == 'Disc'
     assert len(test_pipeline.stages) == 1
     assert test_pipeline.stages[0].name == 'Disc-S0'
