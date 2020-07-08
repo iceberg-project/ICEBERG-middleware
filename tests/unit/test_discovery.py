@@ -148,5 +148,5 @@ def test_generate_pipeline_error(mocked_init):
     component._paths = None
 
     with pytest.raises(RuntimeError):
-        component.generate_discover_pipeline()
+        component.generate_discover_pipe()
     
