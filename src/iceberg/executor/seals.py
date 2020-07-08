@@ -177,7 +177,7 @@ class Seals(Executor):
                               pre_execs=self._pre_execs + ['module list',
                                                            'echo $PYTHONPATH',
                                                            'which python3'])
-        discovery_pipeline = discovery.generate_discover_pipeline()
+        discovery_pipeline = discovery.generate_discover_pipe()
 
         self._app_manager.workflow = set([discovery_pipeline])
 

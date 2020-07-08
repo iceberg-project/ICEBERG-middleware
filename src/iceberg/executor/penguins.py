@@ -12,6 +12,7 @@ import radical.entk as re
 from .executor import Executor
 from ..discovery import Discovery
 
+
 class Penguins(Executor):
     '''
     :Class Penguins:
@@ -19,9 +20,9 @@ class Penguins(Executor):
     :Additional Parameters:
     :input_path: The path to the input images
         :ouptut_path: Path to the output images
-        :model: The model name 
+        :model: The model name
         :model_path: Path of a custom model
-        :epoch: number of epochs (300) 
+        :epoch: number of epochs (300)
     '''
     # pylint: disable=too-many-arguments
     def __init__(self, name, resources, project=None, input_path=None,
@@ -29,12 +30,12 @@ class Penguins(Executor):
                  model_path=None, epoch=None):
         print(resources)
         super(Penguins, self).__init__(name=name,
-                                    resource=resources['resource'],
-                                    queue=resources['queue'],
-                                    walltime=resources['walltime'],
-                                    cpus=resources['cpus'],
-                                    gpus=resources['gpus'],
-                                    project=project)
+                                       resource=resources['resource'],
+                                       queue=resources['queue'],
+                                       walltime=resources['walltime'],
+                                       cpus=resources['cpus'],
+                                       gpus=resources['gpus'],
+                                       project=project)
         self._gpu_ids = gpu_ids
         self._data_input_path = input_path
         self._output_path = output_path
@@ -54,7 +55,7 @@ class Penguins(Executor):
                                + 'lib/python3.5/site-packages']
 
         self._logger.info('Penguins initialized')
-    
+
     def run(self):
         '''
         This is a blocking execution method. This method should be called to
@@ -65,7 +66,6 @@ class Penguins(Executor):
             self._run_workflow()
         finally:
             self._terminate()
-    
 
     def _resolve_pre_execs(self):
         '''
@@ -114,34 +114,33 @@ class Penguins(Executor):
                            '--checkpoints_dir', self._model_path,
                            '--output', self._output_path,
                            '--testset', 'GE',
-                           '--input_im', image.split('/')[-1],
-        ]
+                           '--input_im', image.split('/')[-1]]
         task1.link_input_data = ['%s' % image]
         task1.cpu_reqs = {'processes': 1, 'threads_per_process': 1,
                           'process_type': None, 'thread_type': 'OpenMP'}
         task1.gpu_reqs = {'processes': 1, 'threads_per_process': 1,
                           'process_type': None, 'thread_type': 'OpenMP'}
         # Download resuting images
-        #task1.download_output_data = ['%s/ > %s' % (image.split('/')[-1].
+        # task1.download_output_data = ['%s/ > %s' % (image.split('/')[-1].
         #                                            split('.')[0],
         #                                            image.split('/')[-1])]
-        #task1.tag = task0.name
+        # task1.tag = task0.name
 
         stage0.add_tasks(task1)
         # Add Stage to the Pipeline
         entk_pipeline.add_stages(stage0)
 
         return entk_pipeline
-    
+
     def _run_workflow(self):
         '''
         Private method that creates and executes the workflow of the use case.
         '''
-        
+
         discovery = Discovery(modules=self._req_modules,
                               paths=self._data_input_path,
                               pre_execs=self._pre_execs)
-        discovery_pipeline = discovery.generate_discover_pipeline(images_ftype='png')
+        discovery_pipeline = discovery.generate_discover_pipe(img_ftype='png')
 
         self._app_manager.workflow = set([discovery_pipeline])
 
@@ -170,4 +169,3 @@ class Penguins(Executor):
         '''
 
         self._app_manager.resource_terminate()
-

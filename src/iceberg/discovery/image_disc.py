@@ -56,4 +56,5 @@ if __name__ == '__main__':
                         output CSV', action='store_true')
     args = parser.parse_args()
 
-    image_discovery(args.path, args.filename, args.filetype, args.filesize, args.image_ftype)
+    image_discovery(args.path, args.filename, args.filetype, args.filesize,
+                    args.image_ftype)
