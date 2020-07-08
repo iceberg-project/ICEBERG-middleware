@@ -3,9 +3,10 @@ Author: Ioannis Paraskevakos
 License: MIT
 Copyright: 2018-2019
 """
+# pylint: disable=missing-class-docstring, too-few-public-methods
 
 
-class PenguinsSubparser(object):
+class PenguinsSubparser():
 
     def __init__(self,parser):
             penguins_parser = parser.add_parser('penguins')            
@@ -21,5 +22,3 @@ class PenguinsSubparser(object):
                                          help='The model name'),
             penguins_parser.add_argument('--model_path', '-mp',
                                          help='Path of a custom model')
-
-

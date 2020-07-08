@@ -85,6 +85,7 @@ class Seals(Executor):
 
         return tmp_pre_execs
 
+    # pylint: disable=unused-argument
     def _generate_pipeline(self, name, pre_execs, image, image_size):
 
         '''
@@ -116,11 +117,11 @@ class Seals(Executor):
                            '--input_image=%s' % image.split('/')[-1],
                            # This line points to the local filesystem of the
                            # node that the tiling of the image happened.
-                           '--output_folder=$NODE_LFS_PATH/%s' % task0.name]
+                           '--output_folder=%s' % task0.name]
         task0.link_input_data = [image]
         task0.cpu_reqs = {'processes': 1, 'threads_per_process': 4,
                           'process_type': None, 'thread_type': 'OpenMP'}
-        task0.lfs_per_process = image_size
+        # task0.lfs_per_process = image_size
 
         stage0.add_tasks(task0)
         # Add Stage to the Pipeline
@@ -139,7 +140,9 @@ class Seals(Executor):
                            '--model_architecture', self._model_arch,
                            '--hyperparameter_set', self._hyperparam,
                            '--training_set', 'test_vanilla',
-                           '--test_folder', '$NODE_LFS_PATH/%s' % task0.name,
+                           '--test_folder', '$Pipeline_%s_Stage_%s_Task_%s/%s' %
+                           (entk_pipeline.name, stage0.name,
+                            task0.name, task0.name),
                            '--model_path', './',
                            '--output_folder', './%s' % image.split('/')[-1].
                            split('.')[0]]
@@ -152,7 +155,7 @@ class Seals(Executor):
         task1.download_output_data = ['%s/ > %s' % (image.split('/')[-1].
                                                     split('.')[0],
                                                     image.split('/')[-1])]
-        task1.tag = task0.name
+        # task1.tag = task0.name
 
         stage1.add_tasks(task1)
         # Add Stage to the Pipeline
@@ -160,6 +163,7 @@ class Seals(Executor):
 
         return entk_pipeline
 
+    # pylint: enable=unused-argument
     def _run_workflow(self):
         '''
         Private method that creates and executes the workflow of the use case.
@@ -180,7 +184,7 @@ class Seals(Executor):
         self._app_manager.run()
         images_csv = open('images0.csv')
         images = csv.reader(images_csv)
-        images.next()
+        _ = next(images)
         pre_execs = self._resolve_pre_execs()
         img_pipelines = list()
         idx = 0

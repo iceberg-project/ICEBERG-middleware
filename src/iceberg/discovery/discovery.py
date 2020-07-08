@@ -8,7 +8,7 @@ import os
 import radical.entk as re
 
 
-class Discovery(object):
+class Discovery():
     '''
     :Class Discovery:
     This Class is to create the necessary bag of tasks to discover all the
