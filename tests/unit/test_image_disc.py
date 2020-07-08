@@ -65,7 +65,7 @@ def test_image_discovery_3(mocked_glob, mocked_getsize):
     image_discovery(path='./', filesize=True)
 
     test = pd.read_csv('list.csv')
-    print test
+    print(test)
     assert test.equals(expected_values)
 
     os.remove('list.csv')

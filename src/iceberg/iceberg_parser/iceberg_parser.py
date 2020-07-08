@@ -4,7 +4,6 @@ License: MIT
 Copyright: 2018-2019
 """
 
-from __future__ import print_function
 import argparse
 import sys
 import json
@@ -19,7 +18,8 @@ PARSERS = {'seals': SealsSubparser,
            'rivers': RiversSubparser,
            'landcover': LandcoverSubparser}
 
-class IcebergParser(object):
+
+class IcebergParser():
     """
     This class is the argument parser of the ICEBERG software tool.
     """
@@ -71,6 +71,14 @@ class IcebergParser(object):
             required_args.add_argument('--project', '-pr',
                                        help='The project ID to charge',
                                        type=str, default=None)
+            required_args.add_argument('--rmq_username',
+                                       help='RMQ user name for EnTK. \
+                                             This is RabbitMQ username.',
+                                       type=str, default=None)
+            required_args.add_argument('--rmq_password',
+                                       help='RMQ password. This is the password\
+                                       for RMQ.',
+                                       type=str, default=None)
             required_args.add_argument('--rmq_endpoint',
                                        help='RMQ endpoint for EnTK. \
                                              This is a url.',
@@ -82,12 +90,13 @@ class IcebergParser(object):
             required_args.add_argument('--radical_pilot_dburl', '-rpdb',
                                        help='RD MongoDB URL. \
                                        This URL has the following form: \
-                                       mongodb://<uname>:<password>@ip:port/db_name',
+                                       mongodb://<uname>:<passwd>@ip:port/\
+                                           db_name',
                                        type=str, default=None)
 
             command_parser = parser.add_subparsers(help='commands')
 
-            for key, parser_impl in PARSERS.iteritems():
+            for key, parser_impl in PARSERS.items():
                 parser_impl(command_parser)
 
             tmp_args = parser.parse_args()
@@ -96,18 +105,25 @@ class IcebergParser(object):
             self._args = tmp_args
         else:
             self._args['general'] = dict()
-            self._args['general']['cpus'] = tmp_args.pop('cpus')
-            self._args['general']['gpus'] = tmp_args.pop('gpus')
-            self._args['general']['resource'] = tmp_args.pop('resource')
-            self._args['general']['project'] = tmp_args.pop('project')
-            self._args['general']['queue'] = tmp_args.pop('queue')
-            self._args['general']['waltime'] = tmp_args.pop('walltime')
-            self._args['general']['input_path'] = tmp_args.pop('input_path')
-            self._args['general']['output_path'] = tmp_args.pop('output_path')
+            keys = ['cpus',
+                    'gpus',
+                    'resource',
+                    'project',
+                    'queue',
+                    'walltime',
+                    'input_path',
+                    'output_path',
+                    'rmq_username',
+                    'rmq_password',
+                    'rmq_endpoint',
+                    'rmq_port',
+                    'radical_pilot_dburl']
+            for key in keys:
+                self._args['general'][key] = tmp_args.pop(key)
 
             self._args['analysis'] = dict()
             self._args['analysis']['which'] = tmp_args.pop('which')
-            for key, value in tmp_args.iteritems():
+            for key, value in tmp_args.items():
                 self._args['analysis'][key] = value
 
     # --------------------------------------------------------------------------

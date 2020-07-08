@@ -4,14 +4,13 @@ License: MIT
 Copyright: 2018-2019
 """
 
-from __future__ import print_function
 import os
 
 import radical.entk as re
 import radical.utils as ru
 
 
-class Executor(object):
+class Executor():
     '''
     :Class Executor:
     This base class is for executing workflows.
@@ -46,11 +45,15 @@ class Executor(object):
 
         rmq_endpoint = os.environ.get('RMQ_ENDPOINT', None)
         rmq_port = os.environ.get('RMQ_PORT', None)
+        rmq_username = os.environ.get('RMQ_USERNAME', None)
+        rmq_passwd = os.environ.get('RMQ_PASSWORD', None)
         if ((rmq_endpoint is None) or (rmq_port is None)):
             raise RuntimeError('Rabbit MQ endpoint and/or port is not set')
 
         self._app_manager = re.AppManager(port=int(rmq_port),
                                           hostname=rmq_endpoint,
+                                          username=rmq_username,
+                                          password=rmq_passwd,
                                           name=name,
                                           autoterminate=False,
                                           write_workflow=False)
@@ -73,8 +76,6 @@ class Executor(object):
         '''
         Private method that creates and executes the workflow of the use case.
         '''
-
-        pass
 
     def _terminate(self):
         '''

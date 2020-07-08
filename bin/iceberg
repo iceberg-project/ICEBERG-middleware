@@ -1,11 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Author: Ioannis Paraskevakos
 License: MIT
 Copyright: 2018-2019
 """
 
-import argparse
 import radical.utils as ru
 from iceberg.iceberg_parser import IcebergParser
 from iceberg.executor import Seals
@@ -14,33 +13,42 @@ if __name__ == "__main__":
 
     parsed_values = IcebergParser().args()
     import os
+    if parsed_values['general'].get('rmq_username', None):
+        os.environ['RMQ_USERNAME'] = parsed_values['general']['rmq_username']
+    elif 'RMQ_USERNAME' not in os.environ:
+        raise RuntimeError('RMQ_USERNAME is not setup.')
+    
+    if parsed_values['general'].get('rmq_password', None):
+        os.environ['RMQ_PASSWORD'] = parsed_values['general']['rmq_password']
+    elif 'RMQ_PASSWORD' not in os.environ:
+        raise RuntimeError('RMQ_PASSWORD is not setup.')
 
-    if ['rmq_endpoint'] in parsed_values:
-        os.environ['RMQ_ENDPOINT'] = parsed_values['rmq_endpoint']
+    if parsed_values['general'].get('rmq_endpoint', None):
+        os.environ['RMQ_ENDPOINT'] = parsed_values['general']['rmq_endpoint']
     elif 'RMQ_ENDPOINT' not in os.environ:
         raise RuntimeError('RMQ_ENDPOINT is not setup.')
     
-    if ['rmq_port'] in parsed_values:
-        os.environ['RMQ_PORT'] = parsed_values['rmq_port']
+    if parsed_values['general'].get('rmq_port', None):
+        os.environ['RMQ_PORT'] = parsed_values['general']['rmq_port']
     elif 'RMQ_PORT' not in os.environ:
         raise RuntimeError('RMQ_PORT is not setup.')
     
-    if ['radical_pilot_dburl'] in parsed_values:
-        os.environ['RADICAL_PILOT_DBURL'] = parsed_values['radical_pilot_dburl']
+    if parsed_values['general'].get('radical_pilot_dburl', None):
+        os.environ['RADICAL_PILOT_DBURL'] = parsed_values['general']['radical_pilot_dburl']
     elif 'RADICAL_PILOT_DBURL' not in os.environ:
         raise RuntimeError('RADICAL_PILOT_DBURL is not setup.')
     
     if parsed_values['analysis']['which'] == 'seals':
-        if ['ve_seals'] in parsed_values:
-            os.environ['VE_SEALS'] = parsed_values['ve_seal']
+        if parsed_values['analysis'].get('ve_seals', None):
+            os.environ['VE_SEALS'] = parsed_values['analysis']['ve_seals']
         elif 'VE_SEALS' not in os.environ:
             raise RuntimeError('VE_SEALS is not setup.')
-        exec_obj = Seals(name=ru.generate_id('seals.%(counter)04d',
-                         mode=ru.ID_CUSTOM, namespace='seals'),
+        exec_obj = Seals(name=ru.generate_id('seals',
+                         mode=ru.ID_PRIVATE),
                          resources={
                             'resource': parsed_values['general']['resource'],
                             'queue': parsed_values['general']['queue'],
-                            'walltime': parsed_values['general']['waltime'],
+                            'walltime': parsed_values['general']['walltime'],
                             'cpus': parsed_values['general']['cpus'],
                             'gpus': parsed_values['general']['gpus']
                             },
