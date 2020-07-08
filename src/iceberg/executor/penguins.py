@@ -27,7 +27,7 @@ class Penguins(Executor):
     def __init__(self, name, resources, project=None, input_path=None,
                  output_path=None, gpu_ids=None, model=None,
                  model_path=None, epoch=None):
-
+        print(resources)
         super(Penguins, self).__init__(name=name,
                                     resource=resources['resource'],
                                     queue=resources['queue'],
@@ -46,12 +46,12 @@ class Penguins(Executor):
         self._env_var = os.environ.get('VE_PENGUINS')
         if self._res_dict['resource'] == 'xsede.bridges':
 
-            self._req_modules = ['cuda', 'python2']
+            self._req_modules = ['cuda', 'python3']
 
             self._pre_execs = ['source %s' % self._env_var
                                + '/bin/activate',
                                'export PYTHONPATH=%s/' % self._env_var
-                               + 'lib/python2.7/site-packages']
+                               + 'lib/python3.5/site-packages']
 
         self._logger.info('Penguins initialized')
     
@@ -83,7 +83,7 @@ class Penguins(Executor):
 
         return tmp_pre_execs
 
-    def _generate_pipeline(self, name, pre_execs, image):
+    def _generate_pipeline(self, name, pre_execs, image, gpu_id):
 
         '''
         This function creates a pipeline for an image that will be analyzed.
@@ -106,9 +106,9 @@ class Penguins(Executor):
         task1 = re.Task()
         task1.name = '%s-T0' % stage0.name
         task1.pre_exec = pre_execs
-        task1.executable = 'iceberg_penguins.predicting'  # Assign task executable
+        task1.executable = 'iceberg_penguins.detect'  # Assign task executable
         # Assign arguments for the task executable
-        task1.arguments = ['--gpu_ids', self._gpu_ids,
+        task1.arguments = ['--gpu_ids', gpu_id,
                            '--name', self._model_name,
                            '--epoch', self._epoch,
                            '--checkpoints_dir', self._model_path,
@@ -116,15 +116,15 @@ class Penguins(Executor):
                            '--testset', 'GE',
                            '--input_im', image.split('/')[-1],
         ]
-        task1.link_input_data = ['%s' % (self._model_path + self._model_name)]
+        task1.link_input_data = ['%s' % image]
         task1.cpu_reqs = {'processes': 1, 'threads_per_process': 1,
                           'process_type': None, 'thread_type': 'OpenMP'}
         task1.gpu_reqs = {'processes': 1, 'threads_per_process': 1,
                           'process_type': None, 'thread_type': 'OpenMP'}
         # Download resuting images
-        task1.download_output_data = ['%s/ > %s' % (image.split('/')[-1].
-                                                    split('.')[0],
-                                                    image.split('/')[-1])]
+        #task1.download_output_data = ['%s/ > %s' % (image.split('/')[-1].
+        #                                            split('.')[0],
+        #                                            image.split('/')[-1])]
         #task1.tag = task0.name
 
         stage0.add_tasks(task1)
@@ -137,34 +137,29 @@ class Penguins(Executor):
         '''
         Private method that creates and executes the workflow of the use case.
         '''
-        #print(os.path.abspath(self._model_path + self._model_name))
-        #self._app_manager.shared_data = [os.path.abspath(self._model_path
-        #                                                 + self._model_name)]
-        #self._logger.debug('Uploaded model %s',
-        #                   os.path.abspath(self._model_path + self._model_name))
+        
         discovery = Discovery(modules=self._req_modules,
                               paths=self._data_input_path,
-                              pre_execs=self._pre_execs + ['module list',
-                                                           'echo $PYTHONPATH',
-                                                           'which python2'])
-        discovery_pipeline = discovery.generate_discover_pipeline()
+                              pre_execs=self._pre_execs)
+        discovery_pipeline = discovery.generate_discover_pipeline(images_ftype='png')
 
         self._app_manager.workflow = set([discovery_pipeline])
 
         self._app_manager.run()
         images_csv = open('images0.csv')
         images = csv.reader(images_csv)
-        _= next(images)
+        _ = next(images)
         pre_execs = self._resolve_pre_execs()
         img_pipelines = list()
         idx = 0
-        for [image] in images:
+        for [image, _] in images:
             img_pipe = self._generate_pipeline(name='P%s' % idx,
                                                pre_execs=pre_execs,
-                                               image=image)
+                                               image=image,
+                                               gpu_id=0)
             img_pipelines.append(img_pipe)
             idx += 1
-
+        images_csv.close()
         self._app_manager.workflow = set(img_pipelines)
 
         self._app_manager.run()
@@ -175,4 +170,4 @@ class Penguins(Executor):
         '''
 
         self._app_manager.resource_terminate()
-    
+

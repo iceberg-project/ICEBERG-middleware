@@ -65,12 +65,16 @@ if __name__ == "__main__":
     
     
     elif parsed_values['analysis']['which'] == 'penguins':
+        if parsed_values['analysis'].get('ve_penguins', None):
+            os.environ['VE_PENGUINS'] = parsed_values['analysis']['ve_penguins']
+        elif 'VE_PENGUINS' not in os.environ:
+            raise RuntimeError('VE_PENGUINS is not setup.')
         exec_obj = Penguins(name=ru.generate_id('penguins',
                          mode=ru.ID_PRIVATE),
                          resources={
                             'resource': parsed_values['general']['resource'],
                             'queue': parsed_values['general']['queue'],
-                            'walltime': parsed_values['general']['waltime'],
+                            'walltime': parsed_values['general']['walltime'],
                             'cpus': parsed_values['general']['cpus'],
                             'gpus': parsed_values['general']['gpus']
                             },
@@ -79,9 +83,7 @@ if __name__ == "__main__":
                          output_path=parsed_values['general']['output_path'],
                          model=parsed_values['analysis']['model'],
                          model_path=parsed_values['analysis']['model_path'], 
-                         gpu_ids = parsed_values['analysis']['gpu_ids'],
-                         epoch = parsed_values['analysis']['epoch'])
-                        
+                         epoch = parsed_values['analysis']['epoch'])                     
 
     else:
         raise RuntimeError('Analysis %s not supported yet' %
