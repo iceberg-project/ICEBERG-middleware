@@ -44,7 +44,7 @@ class Discovery():
             else:
                 self._pre_execs = [pre_execs]
 
-    def generate_discover_pipeline(self, filetype='csv'):
+    def generate_discover_pipe(self, filetype='csv', img_ftype='tif'):
         '''
         This function takes as an input paths on Bridges and returns a pipeline
         that will provide a file for all the images that exist in that path.
@@ -76,6 +76,7 @@ class Discovery():
             task.pre_exec = tmp_pre_execs
             task.executable = 'python3'   # Assign executable to the task
             task.arguments = ['image_disc.py', '%s' % self._paths[i],
+                              '--image_ftype=%s' % img_ftype,
                               '--filename=images%d' % i,
                               '--filetype=%s' % filetype, '--filesize']
             task.download_output_data = ['images%d.csv' % i]
