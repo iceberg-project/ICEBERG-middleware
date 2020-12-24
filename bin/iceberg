@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Author: Ioannis Paraskevakos,
-Co Author: Aymen Alsaadi,
+Authors: Ioannis Paraskevakos, Aymen Alsaadi
 License: MIT
 Copyright: 2018-2019
 """
@@ -57,11 +56,14 @@ if __name__ == "__main__":
                          project=parsed_values['general']['project'],
                          input_path=parsed_values['general']['input_path'],
                          output_path=parsed_values['general']['output_path'],
-                         scale_bands=parsed_values['analysis']['scale_bands'],
-                         model=parsed_values['analysis']['model'],
-                         model_path=parsed_values['analysis']['model_path'],
-                         model_arch=parsed_values['analysis']['model_arch'],
-                         hyperparameters=parsed_values['analysis']['hyperparameters'])
+                         bands=parsed_values['analysis']['bands'],
+                         stride=parsed_values['analysis']['stride'],
+                         patch_size=parsed_values['analysis']['patch_size'],
+                         geotiff=parsed_values['analysis']['geotiff'],
+                         model_arch=parsed_values['analysis']['model_architecture']
+                         hyperparam_set=parsed_values['analysis']['hyperparameter_set']
+                         model_name=parsed_values['analysis']['model_name']
+                         models_folder=parsed_values['analysis']['models_folder'])
     
     
     elif parsed_values['analysis']['which'] == 'penguins':
