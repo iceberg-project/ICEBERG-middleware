@@ -51,9 +51,9 @@ class Seals(Executor):
         self._req_modules = None
         self._pre_execs = None
         self._env_var = os.environ.get('VE_SEALS')
-        if self._res_dict['resource'] == 'xsede.bridges':
+        if self._res_dict['resource'] == 'xsede.bridges2':
 
-            self._req_modules = ['cuda', 'anaconda3']
+            self._req_modules = ['cuda/10.2.0', 'anaconda3']
 
             self._pre_execs = ['source activate %s' % self._env_var,
                                'export PYTHONPATH=%s/' % self._env_var
@@ -110,18 +110,18 @@ class Seals(Executor):
         entk_pipeline.name = name
         # Create a Stage object
         stage0 = re.Stage()
-        stage0.name = '%s-S0' % (name)
+        stage0.name = '%s.S0' % (name)
         # Create Task 1, training
         task0 = re.Task()
-        task0.name = '%s-T0' % stage0.name
+        task0.name = '%s.T0' % stage0.name
         task0.pre_exec = pre_execs
         task0.executable = 'iceberg_seals.tiling'  # Assign tak executable
         # Assign arguments for the task executable
-        task0.arguments = ['--input_image=%s' % % image.split('/')[-1]
-                           '--output_folder=%s' % task0.name
-                           '--bands=%s' % self._bands
-                           '--stride=%s' % self._stride
-                           '--patch_size=%s' % self._patch_size
+        task0.arguments = ['--input_image=%s' % image.split('/')[-1],
+                           '--output_folder=$NODE_LFS_PATH/%s' % task0.name,
+                           '--bands=%s' % self._bands,
+                           '--stride=%s' % self._stride,
+                           '--patch_size=%s' % self._patch_size,
                            '--geotiff=%s' % self._geotiff]
         task0.link_input_data = [image]
         task0.cpu_reqs = {'processes': 1, 'threads_per_process': 4,
@@ -134,16 +134,14 @@ class Seals(Executor):
 
         # Create a Stage object
         stage1 = re.Stage()
-        stage1.name = '%s-S1' % (name)
+        stage1.name = '%s.S1' % (name)
         # Create Task 1, training
         task1 = re.Task()
-        task1.name = '%s-T1' % stage1.name
+        task1.name = '%s.T1' % stage1.name
         task1.pre_exec = pre_execs
         task1.executable = 'iceberg_seals.predicting'  # Assign task executable
         # Assign arguments for the task executable
-        task1.arguments = ['--input_dir=%s' % '$Pipeline_%s_Stage_%s_Task_%s/%s' %
-                           (entk_pipeline.name, stage0.name,
-                            task0.name, task0.name),
+        task1.arguments = ['--input_dir=$NODE_LFS_PATH/%s' % task0.name,
                            '--model_architecture=%s' % self._model_arch,
                            '--hyperparameter_set=%s' % self._hyperparam,
                            '--model_name=%s' % self._model_name,
@@ -154,10 +152,10 @@ class Seals(Executor):
                           'process_type': None, 'thread_type': 'OpenMP'}
         task1.gpu_reqs = {'processes': 1, 'threads_per_process': 1,
                           'process_type': None, 'thread_type': 'OpenMP'}
-        # Download resuting images
-        task1.download_output_data = ['%s/ > %s' % (image.split('/')[-1].
-                                                    split('.')[0],
-                                                    image.split('/')[-1])]
+        # Download resulting images
+        # task1.download_output_data = ['%s/ > %s' % (image.split('/')[-1].
+        #                                            split('.')[0],
+        #                                            image.split('/')[-1])]
         # task1.tag = task0.name
 
         stage1.add_tasks(task1)
@@ -179,7 +177,7 @@ class Seals(Executor):
                               paths=self._data_input_path,
                               pre_execs=self._pre_execs + ['module list',
                                                            'echo $PYTHONPATH',
-                                                           'which python3'])
+                                                           'which python'])
         discovery_pipeline = discovery.generate_discover_pipe()
 
         self._app_manager.workflow = set([discovery_pipeline])

@@ -60,9 +60,9 @@ if __name__ == "__main__":
                          stride=parsed_values['analysis']['stride'],
                          patch_size=parsed_values['analysis']['patch_size'],
                          geotiff=parsed_values['analysis']['geotiff'],
-                         model_arch=parsed_values['analysis']['model_architecture']
-                         hyperparam_set=parsed_values['analysis']['hyperparameter_set']
-                         model_name=parsed_values['analysis']['model_name']
+                         model_arch=parsed_values['analysis']['model_architecture'],
+                         hyperparam_set=parsed_values['analysis']['hyperparameter_set'],
+                         model_name=parsed_values['analysis']['model_name'],
                          models_folder=parsed_values['analysis']['models_folder'])
     
     

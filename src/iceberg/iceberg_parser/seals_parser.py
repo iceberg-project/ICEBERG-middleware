@@ -28,7 +28,7 @@ class SealsSubparser():
         seals_parser.add_argument('--hyperparameter_set', type=str,
                         default='B', help='combination of hyperparameters used, must be a member '
                                           'of hyperparameters dictionary')
-        seals_parser.add_argument('--model_name', type=str, default='UnetCntWRN_ts-vanilla.tar',
+        seals_parser.add_argument('--model_name', type=str, default='UnetCntWRN_ts-vanilla',
                         help='name of input model file from training, this name will also be '
                              'used in subsequent steps of the pipeline')
         seals_parser.add_argument('--models_folder', type=str, default='saved_models',

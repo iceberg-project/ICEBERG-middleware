@@ -52,7 +52,7 @@ class Discovery():
         pipeline = re.Pipeline()
         pipeline.name = 'Disc'
         stage = re.Stage()
-        stage.name = 'Disc-S0'
+        stage.name = 'Disc.S0'
 
         if self._paths is None:
             raise RuntimeError('Images paths are not set.')
@@ -72,9 +72,9 @@ class Discovery():
 
         for i in range(len(self._paths)):
             task = re.Task()
-            task.name = 'Disc-T%d' % i
+            task.name = 'Disc.T%d' % i
             task.pre_exec = tmp_pre_execs
-            task.executable = 'python3'   # Assign executable to the task
+            task.executable = 'python'   # Assign executable to the task
             task.arguments = ['image_disc.py', '%s' % self._paths[i],
                               '--image_ftype=%s' % img_ftype,
                               '--filename=images%d' % i,
