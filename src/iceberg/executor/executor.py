@@ -39,9 +39,9 @@ class Executor():
             self._res_dict['queue'] = queue
 
         if 'local.localhost' in resource:
-            self._res_dict['schema'] = 'ssh'
+            self._res_dict['access_schema'] = 'ssh'
         else:
-            self._res_dict['schema'] = 'gsissh'
+            self._res_dict['access_schema'] = 'gsissh'
 
         rmq_endpoint = os.environ.get('RMQ_ENDPOINT', None)
         rmq_port = os.environ.get('RMQ_PORT', None)

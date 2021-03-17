@@ -169,10 +169,10 @@ class Seals(Executor):
         '''
         Private method that creates and executes the workflow of the use case.
         '''
+        self._logger.debug('Uploading shared data %s' % os.path.abspath(self._model_path
+                                                          + self._model_name))
         self._app_manager.shared_data = [os.path.abspath(self._model_path
                                                          + self._model_name)]
-        self._logger.debug('Uploaded model %s',
-                           os.path.abspath(self._model_path + self._model_name))
         discovery = Discovery(modules=self._req_modules,
                               paths=self._data_input_path,
                               pre_execs=self._pre_execs + ['module list',
