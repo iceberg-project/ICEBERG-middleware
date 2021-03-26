@@ -12,6 +12,7 @@ class SealsSubparser():
         seals_parser = parser.add_parser('seals')
         seals_parser.description = 'These are the options for Seals type \
                                    analysis.'
+        seals_parser.set_defaults(which='seals')
         seals_parser.add_argument('--bands', '-b', required=False, type=str, default='0',
                             help='string with bands seperated by commas. defaults to 0 for the panchromatic band')
         seals_parser.add_argument('--stride', '-s', type=float, default=1.0, required=False,
