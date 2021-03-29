@@ -8,7 +8,7 @@ import os
 import radical.entk as re
 
 
-class Discovery(object):
+class Discovery():
     '''
     :Class Discovery:
     This Class is to create the necessary bag of tasks to discover all the
@@ -44,7 +44,7 @@ class Discovery(object):
             else:
                 self._pre_execs = [pre_execs]
 
-    def generate_discover_pipeline(self, filetype='csv'):
+    def generate_discover_pipe(self, filetype='csv', img_ftype='tif'):
         '''
         This function takes as an input paths on Bridges and returns a pipeline
         that will provide a file for all the images that exist in that path.
@@ -52,7 +52,7 @@ class Discovery(object):
         pipeline = re.Pipeline()
         pipeline.name = 'Disc'
         stage = re.Stage()
-        stage.name = 'Disc-S0'
+        stage.name = 'Disc.S0'
 
         if self._paths is None:
             raise RuntimeError('Images paths are not set.')
@@ -72,10 +72,11 @@ class Discovery(object):
 
         for i in range(len(self._paths)):
             task = re.Task()
-            task.name = 'Disc-T%d' % i
+            task.name = 'Disc.T%d' % i
             task.pre_exec = tmp_pre_execs
-            task.executable = 'python3'   # Assign executable to the task
+            task.executable = 'python'   # Assign executable to the task
             task.arguments = ['image_disc.py', '%s' % self._paths[i],
+                              '--image_ftype=%s' % img_ftype,
                               '--filename=images%d' % i,
                               '--filetype=%s' % filetype, '--filesize']
             task.download_output_data = ['images%d.csv' % i]

@@ -63,7 +63,7 @@ def test_generate_pipeline(mocked_init):
     component._paths = ['test']
     component._pre_execs = None
 
-    test_pipeline = component.generate_discover_pipeline()
+    test_pipeline = component.generate_discover_pipe()
     assert test_pipeline.name == 'Disc'
     assert len(test_pipeline.stages) == 1
     assert test_pipeline.stages[0].name == 'Disc-S0'
@@ -74,6 +74,7 @@ def test_generate_pipeline(mocked_init):
         assert task.pre_exec == ['unset PYTHONPATH']
         assert task.executable == 'python3'   # Assign executable to the task
         assert task.arguments == ['image_disc.py', 'test',
+                                  '--image_ftype=tif',
                                   '--filename=images0',
                                   '--filetype=csv', '--filesize']
         assert task.download_output_data == ['images0.csv']
@@ -87,7 +88,7 @@ def test_generate_pipeline(mocked_init):
     component._paths = ['test']
     component._pre_execs = None
 
-    test_pipeline = component.generate_discover_pipeline()
+    test_pipeline = component.generate_discover_pipe()
     assert test_pipeline.name == 'Disc'
     assert len(test_pipeline.stages) == 1
     assert test_pipeline.stages[0].name == 'Disc-S0'
@@ -98,6 +99,7 @@ def test_generate_pipeline(mocked_init):
         assert task.pre_exec == ['unset PYTHONPATH', 'module load test_module']
         assert task.executable == 'python3'   # Assign executable to the task
         assert task.arguments == ['image_disc.py', 'test',
+                                  '--image_ftype=tif',
                                   '--filename=images0',
                                   '--filetype=csv', '--filesize']
         assert task.download_output_data == ['images0.csv']
@@ -111,7 +113,7 @@ def test_generate_pipeline(mocked_init):
     component._paths = ['test']
     component._pre_execs = ['test_pre_exec']
 
-    test_pipeline = component.generate_discover_pipeline()
+    test_pipeline = component.generate_discover_pipe(img_ftype='png')
     assert test_pipeline.name == 'Disc'
     assert len(test_pipeline.stages) == 1
     assert test_pipeline.stages[0].name == 'Disc-S0'
@@ -124,6 +126,7 @@ def test_generate_pipeline(mocked_init):
                                  'test_pre_exec']
         assert task.executable == 'python3'   # Assign executable to the task
         assert task.arguments == ['image_disc.py', 'test',
+                                  '--image_ftype=png',
                                   '--filename=images0',
                                   '--filetype=csv', '--filesize']
         assert task.download_output_data == ['images0.csv']
@@ -145,5 +148,5 @@ def test_generate_pipeline_error(mocked_init):
     component._paths = None
 
     with pytest.raises(RuntimeError):
-        component.generate_discover_pipeline()
+        component.generate_discover_pipe()
     

@@ -14,7 +14,8 @@ import math
 import csv
 
 
-def image_discovery(path, filename='list', filetype='csv', filesize=False):
+def image_discovery(path, filename='list', filetype='csv', filesize=False,
+                    image_ftype='tif'):
     """
     This function creates a dataframe with image names and size from a path.
     :Arguments:
@@ -25,7 +26,7 @@ def image_discovery(path, filename='list', filetype='csv', filesize=False):
                    dataframe. Default value: False
     """
 
-    filepaths = glob(path + '/*.tif')
+    filepaths = glob(path + '/*.%s' % image_ftype)
     image_csv = open(filename + '.' + filetype, 'wt')
     writer = csv.writer(image_csv)
     if filesize:
@@ -45,6 +46,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('path', help='Path to a remote resource where data \
                         are')
+    parser.add_argument('--image_ftype', type=str, help='The filetype of \
+                         the images')
     parser.add_argument('--filename', type=str, default='list',
                         help='Name of the output file')
     parser.add_argument('--filetype', type=str, default='csv',
@@ -53,4 +56,5 @@ if __name__ == '__main__':
                         output CSV', action='store_true')
     args = parser.parse_args()
 
-    image_discovery(args.path, args.filename, args.filetype, args.filesize)
+    image_discovery(args.path, args.filename, args.filetype, args.filesize,
+                    args.image_ftype)
