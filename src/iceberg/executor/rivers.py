@@ -28,7 +28,7 @@ class Rivers(Executor):
     '''
     # pylint: disable=too-many-arguments
     def __init__(self, name, resources, project, input_path, output_path, tile_size,
-                 step, ):
+                 step, weights_path):
 
         super(Rivers, self).__init__(name=name,
                                      resource=resources['resource'],
@@ -39,6 +39,9 @@ class Rivers(Executor):
                                      project=project)
         self._data_input_path = input_path
         self._output_path = output_path
+        self._tile_size = tile_size
+        self._step = step
+        self._weights_path = weights_path
 
         self._req_modules = None
         self._pre_execs = None
@@ -47,9 +50,7 @@ class Rivers(Executor):
 
             self._req_modules = ['python/3.8.6']
 
-            self._pre_execs = ['source %s/bin/activate' % self._env_var,
-                               'export PYTHONPATH=%s/' % self._env_var
-                               + 'lib/python3.8/site-packages']
+            self._pre_execs = ['source %s/bin/activate' % self._env_var]
 
         self._logger.info('Rivers initialized')
     # pylint: disable=too-many-arguments
@@ -89,13 +90,9 @@ class Rivers(Executor):
 
         :Arguments:
             :name: Pipeline name, str
+            :pre_execs: things need to happen before execution
             :image: image path, str
             :image_size: image size in MBs, int
-            :tile_size: The size of each tile, int
-            :model_path: Path to the model file, str
-            :model_arch: Prediction Model Architecture, str
-            :model_name: Prediction Model Name, str
-            :hyperparam_set: Which hyperparameter set to use, str
         '''
         # Create a Pipeline object
         entk_pipeline = re.Pipeline()
@@ -107,19 +104,15 @@ class Rivers(Executor):
         task0 = re.Task()
         task0.name = '%s.T0' % stage0.name
         task0.pre_exec = pre_execs
-        task0.executable = 'iceberg_seals.tiling'  # Assign tak executable
-        # Assign arguments for the task executable
-        task0.arguments = ['--input_image=%s' % image.split('/')[-1],
-                           '--output_folder=$NODE_LFS_PATH/%s' % task0.name,
-                           '--bands=%s' % self._bands,
-                           '--stride=%s' % self._stride,
-                           '--patch_size=%s' % self._patch_size,
-                           '--geotiff=%s' % self._geotiff]
+        task0.executable = 'iceberg_rivers.tiling'  # Assign tak executable
+        task0.arguments = ['--input=%s' % image.split('/')[-1],
+                           '--output=$NODE_LFS_PATH/%s/' % task0.name,
+                           '--tile_size=%s' % self._tile_size,
+                           '--step=%s' % self._step]
         task0.link_input_data = [image]
         task0.cpu_reqs = {'processes': 1, 'threads_per_process': 4,
                           'process_type': None, 'thread_type': 'OpenMP'}
-        # task0.lfs_per_process = image_size
-
+        task0.lfs_per_process = image_size
         stage0.add_tasks(task0)
         # Add Stage to the Pipeline
         entk_pipeline.add_stages(stage0)
@@ -131,24 +124,44 @@ class Rivers(Executor):
         task1 = re.Task()
         task1.name = '%s.T1' % stage1.name
         task1.pre_exec = pre_execs
-        task1.executable = 'iceberg_seals.predicting'  # Assign task executable
+        task1.executable = 'iceberg_rivers.predicting'  # Assign task executable
         # Assign arguments for the task executable
-        task1.arguments = ['--input_dir=$NODE_LFS_PATH/%s' % task0.name,
-                           '--model_architecture=%s' % self._model_arch,
-                           '--hyperparameter_set=%s' % self._hyperparam,
-                           '--model_name=%s' % self._model_name,
-                           '--models_folder=./',
-                           '--output_dir=./%s' % image.split('/')[-1].split('.')[0],]
-        task1.link_input_data = ['$SHARED/%s' % self._model_name]
+        task1.arguments = ['--input=$NODE_LFS_PATH/%s/' % task0.name,
+                           '--weights_path=%s' % self._weights_path,
+                           '--output_folder=$NODE_LFS_PATH/%s/' % % task1.name]
+        # task1.link_input_data = ['$SHARED/%s' % self._model_name]
         task1.cpu_reqs = {'processes': 1, 'threads_per_process': 1,
                           'process_type': None, 'thread_type': 'OpenMP'}
-        task1.gpu_reqs = {'processes': 1, 'threads_per_process': 1,
-                          'process_type': None, 'thread_type': 'OpenMP'}
+        #task1.gpu_reqs = {'processes': 1, 'threads_per_process': 1,
+        #                  'process_type': None, 'thread_type': 'OpenMP'}
+        task0.lfs_per_process = image_size
         # Download resulting images
         # task1.download_output_data = ['%s/ > %s' % (image.split('/')[-1].
         #                                            split('.')[0],
         #                                            image.split('/')[-1])]
         # task1.tag = task0.name
+
+        stage1.add_tasks(task1)
+        # Add Stage to the Pipeline
+        entk_pipeline.add_stages(stage1)
+
+        # Create a Stage object
+        stage2 = re.Stage()
+        stage2.name = '%s.S2' % (name)
+        # Create Task 1, training
+        task2 = re.Task()
+        task2.name = '%s.T2' % stage2.name
+        task2.pre_exec = pre_execs
+        task2.executable = 'iceberg_rivers.mosaic'  # Assign task executable
+        # Assign arguments for the task executable
+        task2.arguments = ['--input=$NODE_LFS_PATH/%s/' % task1.name,
+                           '--input_WV=%s' % image.split('/')[-1],
+                           '--tile_size=%s' % self._tile_size,
+                           '--step=%s' % self._step,
+                            '--output_folder=./']
+        task2.cpu_reqs = {'processes': 1, 'threads_per_process': 1,
+                          'process_type': None, 'thread_type': 'OpenMP'}
+        task2.link_input_data = [image]
 
         stage1.add_tasks(task1)
         # Add Stage to the Pipeline
@@ -167,9 +180,7 @@ class Rivers(Executor):
                                                          + self._model_name)]
         discovery = Discovery(modules=self._req_modules,
                               paths=self._data_input_path,
-                              pre_execs=self._pre_execs + ['module list',
-                                                           'echo $PYTHONPATH',
-                                                           'which python'])
+                              pre_execs=self._pre_execs)
         discovery_pipeline = discovery.generate_discover_pipe()
 
         self._app_manager.workflow = set([discovery_pipeline])
