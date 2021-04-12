@@ -48,9 +48,13 @@ class Rivers(Executor):
         self._env_var = os.environ.get('VE_RIVERS')
         if self._res_dict['resource'] == 'xsede.bridges2':
 
-            self._req_modules = ['python/3.8.6']
+            self._req_modules = ['AI/anaconda3-tf1.2020.11']
 
-            self._pre_execs = ['source %s/bin/activate' % self._env_var]
+            self._pre_execs = ['export PATH=/ocean/projects/mcb110096p/paraskev/gdal-3.0.4/bin:$PATH',
+                               'export LD_LIBRARY_PATH=/ocean/projects/mcb110096p/paraskev/gdal-3.0.4/lib:$LD_LIBRARY_PATH',
+                               'export GDAL_DATA=/ocean/projects/mcb110096p/paraskev/gdal-3.0.4/share/gdal',
+                               'source activate %s' % self._env_var,
+                               'export PYTHONPATH=%s/lib/python3.7/site-packages/' % self._env_var]
 
         self._logger.info('Rivers initialized')
     # pylint: disable=too-many-arguments
@@ -132,8 +136,8 @@ class Rivers(Executor):
         # task1.link_input_data = ['$SHARED/%s' % self._model_name]
         task1.cpu_reqs = {'processes': 1, 'threads_per_process': 1,
                           'process_type': None, 'thread_type': 'OpenMP'}
-        #task1.gpu_reqs = {'processes': 1, 'threads_per_process': 1,
-        #                  'process_type': None, 'thread_type': 'OpenMP'}
+        task1.gpu_reqs = {'processes': 1, 'threads_per_process': 1,
+                          'process_type': None, 'thread_type': 'OpenMP'}
         task0.lfs_per_process = image_size
         # Download resulting images
         # task1.download_output_data = ['%s/ > %s' % (image.split('/')[-1].
@@ -174,10 +178,7 @@ class Rivers(Executor):
         '''
         Private method that creates and executes the workflow of the use case.
         '''
-        self._logger.debug('Uploading shared data %s' % os.path.abspath(self._model_path
-                                                          + self._model_name))
-        self._app_manager.shared_data = [os.path.abspath(self._model_path
-                                                         + self._model_name)]
+
         discovery = Discovery(modules=self._req_modules,
                               paths=self._data_input_path,
                               pre_execs=self._pre_execs)
