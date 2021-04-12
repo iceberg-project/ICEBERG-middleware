@@ -132,7 +132,7 @@ class Rivers(Executor):
         # Assign arguments for the task executable
         task1.arguments = ['--input=$NODE_LFS_PATH/%s/' % task0.name,
                            '--weights_path=%s' % self._weights_path,
-                           '--output_folder=$NODE_LFS_PATH/%s/' % % task1.name]
+                           '--output_folder=$NODE_LFS_PATH/%s/' % task1.name]
         # task1.link_input_data = ['$SHARED/%s' % self._model_name]
         task1.cpu_reqs = {'processes': 1, 'threads_per_process': 1,
                           'process_type': None, 'thread_type': 'OpenMP'}
