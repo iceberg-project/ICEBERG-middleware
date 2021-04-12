@@ -7,8 +7,10 @@ Copyright: 2018-2019
 
 import radical.utils as ru
 from iceberg.iceberg_parser import IcebergParser
+
 from iceberg.executor import Seals
 from iceberg.executor import Penguins
+from iceberg.executor import Rivers
 
 if __name__ == "__main__":
 
@@ -64,8 +66,7 @@ if __name__ == "__main__":
                          hyperparam_set=parsed_values['analysis']['hyperparameter_set'],
                          model_name=parsed_values['analysis']['model_name'],
                          models_folder=parsed_values['analysis']['models_folder'])
-    
-    
+
     elif parsed_values['analysis']['which'] == 'penguins':
         if parsed_values['analysis'].get('ve_penguins', None):
             os.environ['VE_PENGUINS'] = parsed_values['analysis']['ve_penguins']
@@ -85,7 +86,28 @@ if __name__ == "__main__":
                          output_path=parsed_values['general']['output_path'],
                          model=parsed_values['analysis']['model'],
                          model_path=parsed_values['analysis']['model_path'], 
-                         epoch = parsed_values['analysis']['epoch'])                     
+                         epoch = parsed_values['analysis']['epoch'])
+
+    elif parsed_values['analysis']['which'] == 'rivers':
+        if parsed_values['analysis'].get('ve_rivers', None):
+            os.environ['VE_RIVERS'] = parsed_values['analysis']['ve_rivers']
+        elif 'VE_RIVERS' not in os.environ:
+            raise RuntimeError('VE_RIVERS is not setup.')
+        exec_obj = Rivers(name=ru.generate_id('rivers',
+                          mode=ru.ID_PRIVATE),
+                          resources={
+                            'resource': parsed_values['general']['resource'],
+                            'queue': parsed_values['general']['queue'],
+                            'walltime': parsed_values['general']['walltime'],
+                            'cpus': parsed_values['general']['cpus'],
+                            'gpus': parsed_values['general']['gpus']
+                            },
+                          project=parsed_values['general']['project'],
+                          input_path=parsed_values['general']['input_path'],
+                          output_path=parsed_values['general']['output_path'],
+                          tile_size=parsed_values['analysis']['tile_size'],
+                          step=parsed_values['analysis']['step'],
+                          weights_path=parsed_values['analysis']['weights_path'])
 
     else:
         raise RuntimeError('Analysis %s not supported yet' %
