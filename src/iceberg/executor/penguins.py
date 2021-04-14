@@ -116,10 +116,10 @@ class Penguins(Executor):
                            '--testset', 'GE',
                            '--input_im', image.split('/')[-1]]
         task1.link_input_data = ['%s' % image]
-        task1.cpu_reqs = {'processes': 1, 'threads_per_process': 1,
-                          'process_type': None, 'thread_type': 'OpenMP'}
-        task1.gpu_reqs = {'processes': 1, 'threads_per_process': 1,
-                          'process_type': None, 'thread_type': 'OpenMP'}
+        task1.cpu_reqs = {'cpu_processes': 1, 'cpu_threads': 1,
+                          'cpu_process_type': None, 'cpu_thread_type': 'OpenMP'}
+        task1.gpu_reqs = {'gpu_processes': 1, 'gpu_threads': 1,
+                          'gpu_process_type': None, 'gpu_thread_type': 'OpenMP'}
         # Download resuting images
         # task1.download_output_data = ['%s/ > %s' % (image.split('/')[-1].
         #                                            split('.')[0],
