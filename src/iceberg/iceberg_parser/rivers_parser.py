@@ -13,12 +13,9 @@ class RiversSubparser():
         rivers_parser.description = 'These are the options for Rivers type \
                                      analysis.'
         rivers_parser.set_defaults(which='rivers')
-        rivers_parser.add_argument('--threshold', '-th',
-                                   help='Minimum confidence to accept')
-        rivers_parser.add_argument('--hyperparameters', '-hy')
-        rivers_parser.add_argument('--model', '-m',
-                                   help='The size of the scale bands')
-        rivers_parser.add_argument('--model_path', '-mp',
-                                   help='Path of a custom model')
-        rivers_parser.add_argument('--ndwi_path', '-np',
-                                   help='Path to Water mask')
+        rivers_parser.add_argument('-t', '--tile_size', type=int, default=224,
+                            help='Tile size')
+        rivers_parser.add_argument('-s', '--step', type=int, default=112,
+                            help='Step size')
+        rivers_parser.add_argument('-w', '--weights_path', type=str,
+                            help='Path to the weights')

@@ -82,9 +82,9 @@ class Discovery():
             task.download_output_data = ['images%d.csv' % i]
             task.upload_input_data = [os.path.dirname(os.path.abspath(__file__))
                                       + '/image_disc.py']
-            task.cpu_reqs = {'processes': 1, 'process_type': '',
-                             'threads_per_process': 1,
-                             'thread_type': 'OpenMP'}
+            task.cpu_reqs = {'cpu_processes': 1, 'cpu_process_type': '',
+                             'cpu_threads': 1,
+                             'cpu_thread_type': 'OpenMP'}
             stage.add_tasks(task)
         # Add Stage to the Pipeline
         pipeline.add_stages(stage)

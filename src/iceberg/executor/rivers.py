@@ -12,7 +12,7 @@ from .executor import Executor
 from ..discovery import Discovery
 
 
-class Seals(Executor):
+class Rivers(Executor):
     '''
     :Class Seals:
     This class instantiates the Seals use case.
@@ -27,39 +27,36 @@ class Seals(Executor):
         :models_folder: folder where the model tar file is saved
     '''
     # pylint: disable=too-many-arguments
-    def __init__(self, name, resources, project, input_path, output_path, bands,
-                 stride, patch_size, geotiff, model_arch, hyperparam_set,
-                 model_name, models_folder):
+    def __init__(self, name, resources, project, input_path, output_path, tile_size,
+                 step, weights_path):
 
-        super(Seals, self).__init__(name=name,
-                                    resource=resources['resource'],
-                                    queue=resources['queue'],
-                                    walltime=resources['walltime'],
-                                    cpus=resources['cpus'],
-                                    gpus=resources['gpus'],
-                                    project=project)
+        super(Rivers, self).__init__(name=name,
+                                     resource=resources['resource'],
+                                     queue=resources['queue'],
+                                     walltime=resources['walltime'],
+                                     cpus=resources['cpus'],
+                                     gpus=resources['gpus'],
+                                     project=project)
         self._data_input_path = input_path
         self._output_path = output_path
-        self._bands = bands
-        self._stride = stride
-        self._patch_size = patch_size
-        self._geotiff = geotiff
-        self._model_name = model_name
-        self._model_path = models_folder
-        self._model_arch = model_arch
-        self._hyperparam = hyperparam_set
+        self._tile_size = tile_size
+        self._step = step
+        self._weights_path = weights_path
+
         self._req_modules = None
         self._pre_execs = None
-        self._env_var = os.environ.get('VE_SEALS')
+        self._env_var = os.environ.get('VE_RIVERS')
         if self._res_dict['resource'] == 'xsede.bridges2':
 
-            self._req_modules = ['cuda/10.2.0', 'anaconda3']
+            self._req_modules = ['AI/anaconda3-tf1.2020.11']
 
-            self._pre_execs = ['source activate %s' % self._env_var,
-                               'export PYTHONPATH=%s/' % self._env_var
-                               + 'lib/python3.9/site-packages']
+            self._pre_execs = ['export PATH=/ocean/projects/mcb110096p/paraskev/gdal-3.0.4/bin:$PATH',
+                               'export LD_LIBRARY_PATH=/ocean/projects/mcb110096p/paraskev/gdal-3.0.4/lib:$LD_LIBRARY_PATH',
+                               'export GDAL_DATA=/ocean/projects/mcb110096p/paraskev/gdal-3.0.4/share/gdal',
+                               'source activate %s' % self._env_var,
+                               'export PYTHONPATH=%s/lib/python3.7/site-packages/' % self._env_var]
 
-        self._logger.info('Seals initialized')
+        self._logger.info('Rivers initialized')
     # pylint: disable=too-many-arguments
 
     def run(self):
@@ -97,13 +94,9 @@ class Seals(Executor):
 
         :Arguments:
             :name: Pipeline name, str
+            :pre_execs: things need to happen before execution
             :image: image path, str
             :image_size: image size in MBs, int
-            :tile_size: The size of each tile, int
-            :model_path: Path to the model file, str
-            :model_arch: Prediction Model Architecture, str
-            :model_name: Prediction Model Name, str
-            :hyperparam_set: Which hyperparameter set to use, str
         '''
         # Create a Pipeline object
         entk_pipeline = re.Pipeline()
@@ -115,19 +108,15 @@ class Seals(Executor):
         task0 = re.Task()
         task0.name = '%s.T0' % stage0.name
         task0.pre_exec = pre_execs
-        task0.executable = 'iceberg_seals.tiling'  # Assign tak executable
-        # Assign arguments for the task executable
-        task0.arguments = ['--input_image=%s' % image.split('/')[-1],
-                           '--output_folder=$NODE_LFS_PATH/%s' % task0.name,
-                           '--bands=%s' % self._bands,
-                           '--stride=%s' % self._stride,
-                           '--patch_size=%s' % self._patch_size,
-                           '--geotiff=%s' % self._geotiff]
+        task0.executable = 'iceberg_rivers.tiling'  # Assign tak executable
+        task0.arguments = ['--input=%s' % image.split('/')[-1],
+                           '--output=$NODE_LFS_PATH/%s/' % task0.name,
+                           '--tile_size=%s' % self._tile_size,
+                           '--step=%s' % self._step]
         task0.link_input_data = [image]
         task0.cpu_reqs = {'cpu_processes': 1, 'cpu_threads': 4,
-                          'cpu_process_type': None, 'cpu_thread_type': 'OpenMP'}
+                          'cpu_process_type': None, 'cpu_thread_type': None}
         task0.lfs_per_process = image_size
-
         stage0.add_tasks(task0)
         # Add Stage to the Pipeline
         entk_pipeline.add_stages(stage0)
@@ -139,19 +128,17 @@ class Seals(Executor):
         task1 = re.Task()
         task1.name = '%s.T1' % stage1.name
         task1.pre_exec = pre_execs
-        task1.executable = 'iceberg_seals.predicting'  # Assign task executable
-        # Assign arguments for the task executable
-        task1.arguments = ['--input_dir=$NODE_LFS_PATH/%s' % task0.name,
-                           '--model_architecture=%s' % self._model_arch,
-                           '--hyperparameter_set=%s' % self._hyperparam,
-                           '--model_name=%s' % self._model_name,
-                           '--models_folder=./',
-                           '--output_dir=./%s' % image.split('/')[-1].split('.')[0],]
-        task1.link_input_data = ['$SHARED/%s' % self._model_name]
-        task1.cpu_reqs = {'cpu_processes': 1, 'cpu_threads': 1,
-                          'cpu_process_type': None, 'cpu_thread_type': 'OpenMP'}
-        task1.gpu_reqs = {'gpu_processes': 1, 'gpu_threads': 1,
-                          'gpu_process_type': None, 'gpu_thread_type': 'OpenMP'}
+        task1.executable = 'iceberg_rivers.predicting'  # Assign task executable
+#        # Assign arguments for the task executable
+        task1.arguments = ['--input=$NODE_LFS_PATH/%s/' % task0.name,
+                           '--weights_path=%s' % self._weights_path,
+                           '--output_folder=$NODE_LFS_PATH/%s/' % task1.name]
+#        # task1.link_input_data = ['$SHARED/%s' % self._model_name]
+        task1.cpu_reqs = {'processes': 1, 'threads_per_process': 1,
+                          'process_type': None, 'thread_type': None}
+        task1.gpu_reqs = {'processes': 1, 'threads_per_process': 1,
+                          'process_type': None, 'thread_type': None}
+        task0.lfs_per_process = image_size
         # Download resulting images
         # task1.download_output_data = ['%s/ > %s' % (image.split('/')[-1].
         #                                            split('.')[0],
@@ -162,6 +149,28 @@ class Seals(Executor):
         # Add Stage to the Pipeline
         entk_pipeline.add_stages(stage1)
 
+        # Create a Stage object
+        stage2 = re.Stage()
+        stage2.name = '%s.S2' % (name)
+        # Create Task 1, training
+        task2 = re.Task()
+        task2.name = '%s.T2' % stage2.name
+        task2.pre_exec = pre_execs
+        task2.executable = 'iceberg_rivers.mosaic'  # Assign task executable
+#        # Assign arguments for the task executable
+        task2.arguments = ['--input=$NODE_LFS_PATH/%s/' % task1.name,
+                           '--input_WV=%s' % image.split('/')[-1],
+                           '--tile_size=%s' % self._tile_size,
+                           '--step=%s' % self._step,
+                            '--output_folder=./']
+        task2.cpu_reqs = {'processes': 1, 'threads_per_process': 1,
+                          'process_type': None, 'thread_type': None}
+        task2.link_input_data = [image]
+        task2.tags = {'colocate': task0.name}
+        stage2.add_tasks(task2)
+        # Add Stage to the Pipeline
+        entk_pipeline.add_stages(stage2)
+
         return entk_pipeline
 
     # pylint: enable=unused-argument
@@ -169,15 +178,10 @@ class Seals(Executor):
         '''
         Private method that creates and executes the workflow of the use case.
         '''
-        self._logger.debug('Uploading shared data %s' % os.path.abspath(self._model_path
-                                                          + self._model_name))
-        self._app_manager.shared_data = [os.path.abspath(self._model_path
-                                                         + self._model_name)]
+
         discovery = Discovery(modules=self._req_modules,
                               paths=self._data_input_path,
-                              pre_execs=self._pre_execs + ['module list',
-                                                           'echo $PYTHONPATH',
-                                                           'which python'])
+                              pre_execs=self._pre_execs)
         discovery_pipeline = discovery.generate_discover_pipe()
 
         self._app_manager.workflow = set([discovery_pipeline])
