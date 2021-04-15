@@ -114,8 +114,8 @@ class Rivers(Executor):
                            '--tile_size=%s' % self._tile_size,
                            '--step=%s' % self._step]
         task0.link_input_data = [image]
-        task0.cpu_reqs = {'processes': 1, 'threads_per_process': 4,
-                          'process_type': None, 'thread_type': 'OpenMP'}
+        task0.cpu_reqs = {'cpu_processes': 1, 'cpu_threads': 4,
+                          'cpu_process_type': None, 'cpu_thread_type': None}
         task0.lfs_per_process = image_size
         stage0.add_tasks(task0)
         # Add Stage to the Pipeline
@@ -129,21 +129,21 @@ class Rivers(Executor):
         task1.name = '%s.T1' % stage1.name
         task1.pre_exec = pre_execs
         task1.executable = 'iceberg_rivers.predicting'  # Assign task executable
-        # Assign arguments for the task executable
+#        # Assign arguments for the task executable
         task1.arguments = ['--input=$NODE_LFS_PATH/%s/' % task0.name,
                            '--weights_path=%s' % self._weights_path,
                            '--output_folder=$NODE_LFS_PATH/%s/' % task1.name]
-        # task1.link_input_data = ['$SHARED/%s' % self._model_name]
+#        # task1.link_input_data = ['$SHARED/%s' % self._model_name]
         task1.cpu_reqs = {'processes': 1, 'threads_per_process': 1,
-                          'process_type': None, 'thread_type': 'OpenMP'}
+                          'process_type': None, 'thread_type': None}
         task1.gpu_reqs = {'processes': 1, 'threads_per_process': 1,
-                          'process_type': None, 'thread_type': 'OpenMP'}
+                          'process_type': None, 'thread_type': None}
         task0.lfs_per_process = image_size
         # Download resulting images
         # task1.download_output_data = ['%s/ > %s' % (image.split('/')[-1].
         #                                            split('.')[0],
         #                                            image.split('/')[-1])]
-        # task1.tag = task0.name
+        task1.tags = {'colocate': task0.name}
 
         stage1.add_tasks(task1)
         # Add Stage to the Pipeline
@@ -157,19 +157,19 @@ class Rivers(Executor):
         task2.name = '%s.T2' % stage2.name
         task2.pre_exec = pre_execs
         task2.executable = 'iceberg_rivers.mosaic'  # Assign task executable
-        # Assign arguments for the task executable
+#        # Assign arguments for the task executable
         task2.arguments = ['--input=$NODE_LFS_PATH/%s/' % task1.name,
                            '--input_WV=%s' % image.split('/')[-1],
                            '--tile_size=%s' % self._tile_size,
                            '--step=%s' % self._step,
                             '--output_folder=./']
         task2.cpu_reqs = {'processes': 1, 'threads_per_process': 1,
-                          'process_type': None, 'thread_type': 'OpenMP'}
+                          'process_type': None, 'thread_type': None}
         task2.link_input_data = [image]
-
-        stage1.add_tasks(task1)
+        task2.tags = {'colocate': task0.name}
+        stage2.add_tasks(task2)
         # Add Stage to the Pipeline
-        entk_pipeline.add_stages(stage1)
+        entk_pipeline.add_stages(stage2)
 
         return entk_pipeline
 
