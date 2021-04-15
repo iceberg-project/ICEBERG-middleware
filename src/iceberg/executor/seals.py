@@ -124,9 +124,9 @@ class Seals(Executor):
                            '--patch_size=%s' % self._patch_size,
                            '--geotiff=%s' % self._geotiff]
         task0.link_input_data = [image]
-        task0.cpu_reqs = {'processes': 1, 'threads_per_process': 4,
-                          'process_type': None, 'thread_type': 'OpenMP'}
-        # task0.lfs_per_process = image_size
+        task0.cpu_reqs = {'cpu_processes': 1, 'cpu_threads': 4,
+                          'cpu_process_type': None, 'cpu_thread_type': 'OpenMP'}
+        task0.lfs_per_process = image_size
 
         stage0.add_tasks(task0)
         # Add Stage to the Pipeline
@@ -148,15 +148,15 @@ class Seals(Executor):
                            '--models_folder=./',
                            '--output_dir=./%s' % image.split('/')[-1].split('.')[0],]
         task1.link_input_data = ['$SHARED/%s' % self._model_name]
-        task1.cpu_reqs = {'processes': 1, 'threads_per_process': 1,
-                          'process_type': None, 'thread_type': 'OpenMP'}
-        task1.gpu_reqs = {'processes': 1, 'threads_per_process': 1,
-                          'process_type': None, 'thread_type': 'OpenMP'}
+        task1.cpu_reqs = {'cpu_processes': 1, 'cpu_threads': 1,
+                          'cpu_process_type': None, 'cpu_thread_type': 'OpenMP'}
+        task1.gpu_reqs = {'gpu_processes': 1, 'gpu_threads': 1,
+                          'gpu_process_type': None, 'gpu_thread_type': 'OpenMP'}
         # Download resulting images
         # task1.download_output_data = ['%s/ > %s' % (image.split('/')[-1].
         #                                            split('.')[0],
         #                                            image.split('/')[-1])]
-        # task1.tag = task0.name
+        task1.tags = {'colocate': task0.name}
 
         stage1.add_tasks(task1)
         # Add Stage to the Pipeline
